@@ -1,5 +1,6 @@
-#include <reg51.h>
+﻿#include <reg51.h>
 #include<stdio.h>
+#include <math.h>
 
 //Feel free to change methods declarations
 
@@ -8,6 +9,11 @@ unsigned char switch_user;			// 0: User A, 1: User B
 unsigned char trainingCount;		// Counts how many times did we get measurements from the user. Starts with 0.
 unsigned char nextChar; // identifies which character we expect the user to enter (index of the character) starts with 0.
 unsigned char word[10] = {'.','t','i','e','5','R','o','n','a','l'};	// Stores the characters of the word we want to use.
+sbit LED = P0^0;
+int c = 0; //To increase maximum timer delay time
+int bound = 0; //Changes how long LED flashes depending on user
+int userA[] = {0, 0, 0, 0, 0, 0, 0, 0, 0}; //dummy user profiles
+int userB[] = {0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 // Configuring UART,
 // using Mode 1 and Timer 1 Mode 2 for baudrate (2400)
@@ -122,6 +128,63 @@ void calculateTrainTime(){
  
 void calculateTestTime(){
  
+}
+
+void flashUserA() {
+	bound = 30;
+	TMOD = 0x01;
+	TH0 = 0x0;
+	TL0 = 0x0;
+	TR0 = 1;
+	ET0 = 1;
+	EA = 1;
+	while(1){
+	}
+}
+
+void flashUserB(){
+	bound = 5;
+	TMOD = 0x01;
+	TH0 = 0x0;
+	TL0 = 0x0;
+	TR0 = 1;
+	ET0 = 1;
+	EA = 1;
+	while(1){
+	}
+}
+
+void determineUser(int test[]) {
+	int dA = 0;
+	int dB = 0;
+	
+	int i = 0;
+	while (i < 9) {
+		dA += (test[i] - userA[i])*(test[i] - userA[i]);
+		dB += (test[i] - userB[i])*(test[i] - userB[i]);
+		i++;
+	}
+	
+	dA = sqrt(dA * 1.0);
+	dB = sqrt(dB * 1.0);
+	
+	if(dA < dB)
+		flashUserA();
+	else
+		flashUserB();
+}
+
+void timer0_isr() interrupt 1{
+	if(c == bound) {
+		c = 0;
+		TH0 = 0x0;
+		TL0 = 0x0;
+		LED = !LED;
+	} else {
+			c++;
+			TH0 = 0x0;
+			TL0 = 0x0;
+	}
 }
 
 void main() {
