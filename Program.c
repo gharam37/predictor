@@ -9,6 +9,8 @@ unsigned char trainingCount;		// Counts how many times did we get measurements f
 unsigned char nextChar; // identifies which character we expect the user to enter (index of the character) starts with 0.
 unsigned char word[10] = {'.','t','i','e','5','R','o','n','a','l'};	// Stores the characters of the word we want to use.
 
+void decide(unsigned char received);
+	
 // Configuring UART,
 // using Mode 1 and Timer 1 Mode 2 for baudrate (2400)
 
@@ -50,6 +52,25 @@ void receive() interrupt 4 {
 	unsigned char received = SBUF;
  	 RI = 0;
 	decide(received);
+}
+
+void runTraining() {
+// TODO: finalize the training (AKA: calculating the average and so for the current user)
+}
+
+// called when the user enters the whole word in the testing phase it should predict who was the user
+void predict(){
+ 
+}
+ 
+ // TODO: you know what character did we actually read now (using the variable nextChar [it is an index to the character]) so you should measure the flight time and add it to training
+// for the current user and same for the test time
+void calculateTrainTime(){
+ 
+}
+ 
+void calculateTestTime(){
+ 
 }
 
 // method to read the ports and decide
@@ -105,24 +126,6 @@ void decide(unsigned char received){
 	
 }
 
-void runTraining() {
-// TODO: finalize the training (AKA: calculating the average and so for the current user)
-}
-
-// called when the user enters the whole word in the testing phase it should predict who was the user
-void predict(){
- 
-}
- 
- // TODO: you know what character did we actually read now (using the variable nextChar [it is an index to the character]) so you should measure the flight time and add it to training
-// for the current user and same for the test time
-void calculateTrainTime(){
- 
-}
- 
-void calculateTestTime(){
- 
-}
 
 void main() {
 	
