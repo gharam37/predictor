@@ -17,21 +17,21 @@ void decide(unsigned char received);
 void uartConfig(void) {
 	
 	SCON 	= 0x50;			// Serial Port: Mode 1 (8 bits), use Timer 1 for baudrate, enable reception (bit 4)
-	IE 		= 0x90; 		// enable global interrupt and serial receive interrupt
+	IE 		|= 0x90; 		// enable global interrupt and serial receive interrupt
 	
 	// Baudrate	= 2400 (bits/second ?) => 240 characters per second
 	// Fosc			= 12 MHz
 	
-	// Baudrate	= Fosc / (N * (256 � TH1))
-	// For (SMOD1 = 0) N = 384 : TH1 = 242.979 => 243 = 0xF3	<- We'll use this value
-	// For (SMOD1 = 1) N = 192 : TH1 = 229.958 => 230 = 0xE6
+	// Baudrate	= Fosc / (N * (256 - TH1))
+	// For (SMOD1 = 0) N = 384 : TH1 = 242.979 => 243 = 0xF3
+	// For (SMOD1 = 1) N = 192 : TH1 = 229.958 => 230 = 0xE6	<- We'll use this value
 	
-	PCON &= 0x7F;			// set SMOD1 in PCON to 0..
-										// Tells that we are using N = 384.
+	PCON |= 0x80;			// set SMOD1 in PCON to 1..
+										// Tells that we are using N = 192.
 										// What does it mean? I don't know xD
 	
   TMOD |= 0x20;			// timer 1, mode 2, 8-bit reload
-  TH1 	= 0xF3;			// baud rate: reload value for 2400 baud @ 12MHz (to change?)
+  TH1 	= 0xE6;			// baud rate: reload value for 2400 baud @ 12MHz (to change?)
   TR1 	= 1;				// start timer 1
 }
 
@@ -50,7 +50,7 @@ void uartConfig(void) {
 // Option 2: interrupt-based
 void receive() interrupt 4 {
 	unsigned char received = SBUF;
- 	 RI = 0;
+ 	RI = 0;
 	decide(received);
 }
 
