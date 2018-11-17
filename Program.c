@@ -10,19 +10,32 @@ unsigned char word[3] = {'.','t','i'};	// Stores the characters of the word we w
 unsigned int TimerEntryIndex = 0;  //Initial Time at which we started Program
 int StartCount = 2;  //Initial Time at which we started Program 2 means not in count mode 0-1 meaning we are waiting for input
 int CorrectSofar = 0;
+int StartTraining=0; // To Stop overflow and counter from increasing when we aren't putting input .. between 2 runs of entering a work
 unsigned long TimerArray[2] = {0,0};
-unsigned int Output=0;
+unsigned long FirstUserData[2] = {0,0}; // should change to 9
+unsigned long SecondUserData[2] = {0,0}; // should change to 9
 
 void CalculateAverage(unsigned int Values[])
 {
-	
-	int i=0;
-	for(;i<5;i++){
-		Output+=Values[i];
-		
+	int i =0;
+	for(;i<2;i++){ //Length of array should change to 10
+		if(switch_user==0){
+		FirstUserData[i]+=Values[i]; //Divide by the number of training should change to 5 
+			Values[i] = 0; //Clear for next Count
+		}
+		else{
+			SecondUserData[i]=Values[i];
+		}
+			
 	}
-	Output = Output/5;
 	
+	
+}
+void ClearTimerArray(){
+	int i=0;
+	for(;i<2;i++)
+	  TimerArray[i]=0;
+
 }
 void runTraining(){}
 // called when the user enters the whole word in the testing phase it should predict who was the user
@@ -34,13 +47,88 @@ void predict(){
 // for the current user and same for the test time
 void calculateTrainTime(){
 
+	
+
  
 }
  
 void calculateTestTime(){
+	
+			if(StartCount==0 &&StartTraining==1){ 
+			 unsigned long OverFlowCount = 0;
+
+			TR0 = 1;            //Start the timer
+
+			while(StartCount == 0  ){
+				    while(TF0 == 0);   // Wait for Timer Overflow
+				    OverFlowCount++;
+            TF0 = 0;
+			}				//wait till the key is released
+			TR0 = 0;            //Stop the timer
+			if(CorrectSofar == 1){
+			TimerArray[TimerEntryIndex]=((TH0 << 8) | TL0)+0x0000FFFF*OverFlowCount; //Load timer into Array
+				TimerEntryIndex++;
+
+			}
+			if(TimerEntryIndex ==2){ // IF Reached our maximum letter
+					TimerEntryIndex = 0;
+          //////// Call The Method that calculates the ecludien distance in here 					
+				
+				}
+		  TH0 = 0;                //Reset the timer.
+		  TL0 = 0;	
+			TF0=0;
+			StartCount=0;
+			OverFlowCount=0;
+		}	
  
 }
+void CalculateTime(){
+	if( switch_training){
+	  calculateTestTime();
+	
+	}
 
+	if(StartCount==0 &&StartTraining==1){ 
+			 unsigned long OverFlowCount = 0;
+
+			TR0 = 1;            //Start the timer
+
+			while(StartCount == 0  ){
+				    while(TF0 == 0);   // Wait for Timer Overflow
+				    OverFlowCount++;
+            TF0 = 0;
+			}				//wait till the key is released
+			TR0 = 0;            //Stop the timer
+			if(CorrectSofar == 1){
+			TimerArray[TimerEntryIndex]=+((TH0 << 8) | TL0)+0x0000FFFF*OverFlowCount; //Load timer into Array
+				TimerEntryIndex++;
+
+			}
+			if(TimerEntryIndex ==2){ // IF Reached our maximum letter
+					TimerEntryIndex = 0;
+					if(trainingCount==2) // if we finished Training for user A to be changed to 5
+					{
+						trainingCount = 0; 
+						CalculateAverage(TimerArray);
+						ClearTimerArray();
+						if(!switch_user){ // If we r still in User A
+						switch_user=1; //Go to b
+						}
+						else{
+						   switch_training = 1; // If we finished B .. go to training
+						}
+					}						
+				
+				}
+		  TH0 = 0;                //Reset the timer.
+		  TL0 = 0;	
+			TF0=0;
+			StartCount=0;
+			OverFlowCount=0;
+		}	
+
+}
 
 void uartConfig(void) {
 	
@@ -88,11 +176,13 @@ void decide(unsigned char received){
 		return;
 	}
 	// calculate the flight time between this character and the previous one
-	if(!switch_training){
-		CorrectSofar = 1;
-
+  CorrectSofar = 1;
 		StartCount=1; 
+		StartTraining =1 ; //Stop when we finished one work for one user
+
+	if(!switch_training){
 		
+  
 		//calculateTrainTime(); // Called in MainMethod
 	} else {
 		calculateTestTime();
@@ -105,10 +195,13 @@ void decide(unsigned char received){
 	// if we reach the last char 
 	// increment the training count if it is training phase
 	// call predict if we are in the testing phase
-	if(nextChar == 3){
+	if(nextChar == 3){ //Should Change to 10
 		nextChar = 0;
-		if(!switch_training)
+		StartTraining =0 ; //Stop when we finished one work for one user
+		if(!switch_training){
 			trainingCount++;
+			
+		}
 		else{
 			predict();
 			return;
@@ -116,18 +209,19 @@ void decide(unsigned char received){
 	}
 	//finalizing training after 5 inputs for the word
 	if(trainingCount == 2){
-		runTraining();
-		trainingCount = 0;
+		//runTraining();
+		//trainingCount = 0;
 		nextChar = 0;
+		StartTraining = 0 ; //Stop when we finished a training for one user
 		// switch to training phase of user B
-		if(!switch_user){
+		/*if(!switch_user &&!switch_training){         //Commented Cuz I already do this in my timer 
 			//printf("%s","user B starts training");
-			switch_user = 1;
+			//switch_user = 1;
 		} else {
 		// both A and B did the training, switch to testing
 			//printf("%s","Testing phase started");
 			switch_training = 1;
-		}
+		}*/ 
 		
 	}
 	
@@ -149,36 +243,14 @@ void receive() interrupt 4 {
 
 void main() {
 	
-  unsigned int Values[5]={1,2,3,4,5};
+
 	
-	CalculateAverage(Values);
 	uartConfig();
 	
 	while(1)
 	{
-
-		if(StartCount==0 ){
-			 unsigned long OverFlowCount = 0;
-
-			TR0 = 1;            //Start the timer
-
-			while(StartCount == 0  ){
-				    while(TF0 == 0);   // Wait for Timer Overflow
-				    OverFlowCount++;
-            TF0 = 0;
-			}				//wait till the key is released
-			TR0 = 0;            //Stop the timer
-			if(CorrectSofar == 1){
-			TimerArray[TimerEntryIndex]=((TH0 << 8) | TL0)+0x0000FFFF*OverFlowCount; //Load timer into Array
-				TimerEntryIndex++;
-				
-			}
-		  TH0 = 0;                //Reset the timer.
-		  TL0 = 0;	
-			TF0=0;
-			StartCount=0;
-			OverFlowCount=0;
-		}			
+    CalculateTime();
+			
 	}
 	
 }
