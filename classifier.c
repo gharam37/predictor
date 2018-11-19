@@ -15,7 +15,7 @@ unsigned long SecondUserData[2] = {0,0}; // should change to 9
 unsigned long OverFlowCount;
 bit predict= 0;
 unsigned char size = 3;
-unsigned char numberOfTrainings = 3;
+unsigned char numberOfTrainings = 2;
 sbit LED = P0^0;
 unsigned char bound=0;
 unsigned char c = 0; //To increase maximum timer delay time int bound = 0; //Changes how long LED flashes depending on user
@@ -42,19 +42,62 @@ void ClearTimerArray(){
 
 }
 
- // TODO: you know what character did we actually read now (using the variable nextChar [it is an index to the character]) so you should measure the flight time and add it to training
-// for the current user and same for the test time
-void calculateTrainTime(){
-
-	
-
- 
+void flashUserA() {
+	bound = 30;
+	TMOD = 0x01;
+	TH0 = 0x0;
+	TL0 = 0x0;
+	TR0 = 1;
+	ET0 = 1;
+	EA = 1;
+	while(1){
+	}
 }
- 
+
+void flashUserB(){
+	bound = 5;
+	TMOD = 0x01;
+	TH0 = 0x0;
+	TL0 = 0x0;
+	TR0 = 1;
+	ET0 = 1;
+	EA = 1;
+	while(1){
+	}
+}
+
+void determineUser() {
+	unsigned long dA = 0;
+	unsigned long dB = 0;
+	char i=0;
+	for(; i<size-1; i++) {
+		dA += (TimerArray[i] - FirstUserData[i])*(TimerArray[i] - FirstUserData[i]);
+		dB += (TimerArray[i] - SecondUserData[i])*(TimerArray[i] - SecondUserData[i]);
+	}
+	
+	if(dA < dB)
+		flashUserA();
+	else
+		flashUserB();
+}
+
+void timer0_isr() interrupt 1{
+	if(c == bound) {
+		c = 0;
+		TH0 = 0x0;
+		TL0 = 0x0;
+		LED = !LED;
+	} else {
+			c++;
+			TH0 = 0x0;
+			TL0 = 0x0;
+	}
+}
+
 void calculateTestTime(){
 	
 			if(StartCount==0 &&StartTraining==1){ 
-			 unsigned long OverFlowCount = 0;
+			  OverFlowCount = 0;
 
 			TR0 = 1;            //Start the timer
 
@@ -76,6 +119,7 @@ void calculateTestTime(){
 			}
 			if(TimerEntryIndex ==2){ // IF Reached our maximum letter
 					TimerEntryIndex = 0;
+				  predict =1;
           //////// Call The Method that calculates the ecludien distance in here 					
 				
 				}
@@ -94,7 +138,7 @@ void CalculateTime(){
 	}
 
 	if(StartCount==0 &&StartTraining==1){ 
-			 unsigned long OverFlowCount = 0;
+			  OverFlowCount = 0;
 
 			TR0 = 1;            //Start the timer
 
@@ -225,31 +269,21 @@ void decide(unsigned char received){
 		//trainingCount = 0;
 		nextChar = 0;
 		StartTraining = 0 ; //Stop when we finished a training for one user
-		// switch to training phase of user B
-		/*if(!switch_user &&!switch_training){         //Commented Cuz I already do this in my timer 
-			//printf("%s","user B starts training");
-			//switch_user = 1;
-		} else {
-		// both A and B did the training, switch to testing
-			//printf("%s","Testing phase started");
-			switch_training = 1;
-		}*/ 
+
 		
 	}
 	
 }
 
-// Option 2: interrupt-based
+
 void receive() interrupt 4 {
 	unsigned char received = SBUF;
  	 RI = 0;
 	 StartCount =1;
 
-	//printf("%s","Here");
 	decide(received);
 }
 
-// method to read the ports and decide
 
 
 
@@ -262,6 +296,10 @@ void main() {
 	while(1)
 	{
     CalculateTime();
+		if(predict){
+			determineUser();
+			break;
+		}
 			
 	}
 	
