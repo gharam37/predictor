@@ -4,14 +4,14 @@ bit switch_training;	// 0: training, 1: testing
 bit switch_user;			// 0: User A, 1: User B
 unsigned char trainingCount;		// Counts how many times did we get measurements from the user. Starts with 0.
 unsigned char nextChar=0; // identifies which character we expect the user to enter (index of the character) starts with 0.
-unsigned char word[10] = {'.','t','i','e','5','R','o','n','a','l'};	// Stores the characters of the word we want to use.
+//unsigned char word[10] = {'.','t','i','e','5','R','o','n','a','l'};	// Stores the characters of the word we want to use.
 unsigned char TimerEntryIndex = 0;  //Initial Time at which we started Program
 char StartCount = 2;  //Initial Time at which we started Program 2 means not in count mode 0-1 meaning we are waiting for input
 bit CorrectSofar = 0;
 bit StartTraining=0; // To Stop overflow and counter from increasing when we aren't putting input .. between 2 runs of entering a work
-unsigned long TimerArray[9] = {0,0,0,0,0,0,0,0,0};
-unsigned long FirstUserData[9] = {0,0,0,0,0,0,0,0,0}; 
-unsigned long SecondUserData[9] = {0,0,0,0,0,0,0,0,0}; 
+unsigned int TimerArray[9] = {0,0,0,0,0,0,0,0,0};
+unsigned int FirstUserData[9] = {0,0,0,0,0,0,0,0,0}; 
+unsigned int SecondUserData[9] = {0,0,0,0,0,0,0,0,0}; 
 unsigned long OverFlowCount;
 bit predict= 0;
 unsigned char numberOfTrainings = 2;
@@ -23,10 +23,10 @@ void CalculateAverage(unsigned char value)
 	unsigned char i =0;
 	for(;i<9;i++){ //Length of array should change to 10
 		if(!switch_user){
-			FirstUserData[i]+=TimerArray[i]/(value*1000);; //Divide by the number of training should change to 5 
+			FirstUserData[i]+=TimerArray[i]/(value);; //Divide by the number of training should change to 5 
 		}
 		else{
-			SecondUserData[i]=TimerArray[i]/(value*1000);
+			SecondUserData[i]=TimerArray[i]/(value);
 		}
 			
 	}
@@ -90,7 +90,7 @@ void TimerMethod(){
 			}				//wait till the key is released
 			TR0 = 0;            //Stop the timer
 			if(CorrectSofar){
-				TimerArray[TimerEntryIndex]=+((TH0 << 8) | TL0)+0x0000FFFF*OverFlowCount; //Load timer into Array
+				TimerArray[TimerEntryIndex]=+(((TH0 << 8) | TL0)+0x0000FFFF*OverFlowCount)/1000; //Load timer into Array
 				TimerEntryIndex++;
 			}else{
 				TimerEntryIndex=0;
@@ -170,18 +170,37 @@ void uartConfig(void) {
 	TH0 = 0x00;
 }
 
+unsigned char ExpectedChar(){
+	
+	switch (nextChar)
+{
+    case 0:
+        return '.';
+    case 1:
+        return 't';
+		
+   case 2:
+        return 'i';
+    case 3:
+        return 'e';
+		case 4:
+        return '5';
+    case 5:
+        return 'R';
+		case 6:
+        return 'o';
+    case 7:
+        return 'n';
+		case 8:
+        return 'a';
+    case 9:
+        return 'l';
 
+}
+return 0;
+}
 void decide(unsigned char received){
-	unsigned char idx;
-	for(idx = 0; idx < 10; idx++)
-	{
-		if(word[idx] == received){
-			CorrectSofar = 0;
-			break;
-		}
-	}
-	// wrong character
-	if(idx != nextChar)
+	if(received != ExpectedChar())
 	{
 		nextChar = 0;
 		StartCount=2; //Reset Count
