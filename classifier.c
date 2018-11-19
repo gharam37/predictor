@@ -37,20 +37,60 @@ void ClearTimerArray(){
 	  TimerArray[i]=0;
 
 }
-void runTraining(){}
-// called when the user enters the whole word in the testing phase it should predict who was the user
-void predict(){
- 
-}
- 
- // TODO: you know what character did we actually read now (using the variable nextChar [it is an index to the character]) so you should measure the flight time and add it to training
-// for the current user and same for the test time
-void calculateTrainTime(){
 
+void flashUserA() {
+	bound = 30;
+	TMOD = 0x01;
+	TH0 = 0x0;
+	TL0 = 0x0;
+	TR0 = 1;
+	ET0 = 1;
+	EA = 1;
+	while(1){
+	}
+}
+
+void flashUserB(){
+	bound = 5;
+	TMOD = 0x01;
+	TH0 = 0x0;
+	TL0 = 0x0;
+	TR0 = 1;
+	ET0 = 1;
+	EA = 1;
+	while(1){
+	}
+}
+
+void determineUser() {
+	unsigned long dA = 0;
+	unsigned long dB = 0;
+	for(char i = 0; i<2; i++) {
+		dA += (TimerArray[i] - FirstUserData[i])*(TimerArray[i] - FirstUserData[i]);
+		dB += (TimerArray[i] - SecondUserData[i])*(TimerArray[i] - SecondUserData[i]);
+	}
 	
-
- 
+	if(dA < dB)
+		flashUserA();
+	else
+		flashUserB();
 }
+
+void timer0_isr() interrupt 1{
+	if(c == bound) {
+		c = 0;
+		TH0 = 0x0;
+		TL0 = 0x0;
+		LED = !LED;
+	} else {
+			c++;
+			TH0 = 0x0;
+			TL0 = 0x0;
+	}
+}
+
+
+
  
 void calculateTestTime(){
 	
@@ -72,7 +112,7 @@ void calculateTestTime(){
 			}
 			if(TimerEntryIndex ==2){ // IF Reached our maximum letter
 					TimerEntryIndex = 0;
-          //////// Call The Method that calculates the ecludien distance in here 					
+					determineUser();				
 				
 				}
 		  TH0 = 0;                //Reset the timer.
@@ -84,7 +124,7 @@ void calculateTestTime(){
  
 }
 void CalculateTime(){
-	if( switch_training){
+	if(switch_training){
 	  calculateTestTime();
 	
 	}
@@ -168,26 +208,14 @@ void decide(unsigned char received){
 	{
 		nextChar = 0;
 		StartCount=2; //Reset Count
-    CorrectSofar = 0;
-		TimerArray[0]=0;
-    TimerArray[1]=0;
-
-		//printf("%s","type the word again please");
+    	CorrectSofar = 0;
+		ClearTimerArray();
 		return;
 	}
 	// calculate the flight time between this character and the previous one
-  CorrectSofar = 1;
-		StartCount=1; 
-		StartTraining =1 ; //Stop when we finished one work for one user
-
-	if(!switch_training){
-		
-  
-		//calculateTrainTime(); // Called in MainMethod
-	} else {
-		calculateTestTime();
-	}
-	
+  	CorrectSofar = 1;
+	StartCount=1; 
+	StartTraining =1 ; //Stop when we finished one work for one user
 	nextChar++;
 	if(nextChar==1){
 	  StartCount=0;
@@ -200,29 +228,13 @@ void decide(unsigned char received){
 		StartTraining =0 ; //Stop when we finished one work for one user
 		if(!switch_training){
 			trainingCount++;
-			
 		}
-		else{
-			predict();
-			return;
-		}	
 	}
 	//finalizing training after 5 inputs for the word
 	if(trainingCount == 2){
-		//runTraining();
-		//trainingCount = 0;
 		nextChar = 0;
 		StartTraining = 0 ; //Stop when we finished a training for one user
 		// switch to training phase of user B
-		/*if(!switch_user &&!switch_training){         //Commented Cuz I already do this in my timer 
-			//printf("%s","user B starts training");
-			//switch_user = 1;
-		} else {
-		// both A and B did the training, switch to testing
-			//printf("%s","Testing phase started");
-			switch_training = 1;
-		}*/ 
-		
 	}
 	
 }
@@ -232,13 +244,8 @@ void receive() interrupt 4 {
 	unsigned char received = SBUF;
  	 RI = 0;
 	 StartCount =1;
-
-	//printf("%s","Here");
 	decide(received);
 }
-
-// method to read the ports and decide
-
 
 
 void main() {
