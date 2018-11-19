@@ -14,7 +14,7 @@ int StartTraining=0; // To Stop overflow and counter from increasing when we are
 unsigned long TimerArray[2] = {0,0};
 unsigned long FirstUserData[2] = {0,0}; // should change to 9
 unsigned long SecondUserData[2] = {0,0}; // should change to 9
-
+bool predict= false;
 void CalculateAverage(unsigned int Values[])
 {
 	int i =0;
