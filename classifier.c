@@ -19,16 +19,16 @@ unsigned char numberOfTrainings = 2;
 sbit LED = P0^0;
 unsigned char bound=0;
 unsigned char c = 0; //To increase maximum timer delay time int bound = 0; //Changes how long LED flashes depending on user
-void CalculateAverage(unsigned long Values[])
+void CalculateAverage(unsigned long Values[],unsigned char value)
 {
 	int i =0;
 	for(;i<2;i++){ //Length of array should change to 10
 		if(switch_user==0){
-		FirstUserData[i]+=Values[i]/2000; //Divide by the number of training should change to 5 
+		FirstUserData[i]+=Values[i]/(value*1000);; //Divide by the number of training should change to 5 
 			Values[i] = 0; //Clear for next Count
 		}
 		else{
-			SecondUserData[i]=Values[i]/2000;
+			SecondUserData[i]=Values[i]/(value*1000);
 		}
 			
 	}
@@ -94,50 +94,7 @@ void timer0_isr() interrupt 1{
 	}
 }
 
-void calculateTestTime(){
-	
-			if(StartCount==0 &&StartTraining==1){ 
-			  OverFlowCount = 0;
-
-			TR0 = 1;            //Start the timer
-
-			while(StartCount == 0  ){
-				    while(TF0 == 0);   // Wait for Timer Overflow
-				    OverFlowCount++;
-            TF0 = 0;
-			}				//wait till the key is released
-			TR0 = 0;            //Stop the timer
-			if(CorrectSofar == 1){
-			TimerArray[TimerEntryIndex]=(((TH0 << 8) | TL0)+0x0000FFFF*OverFlowCount)/1000; //Load timer into Array
-				TimerEntryIndex++;
-
-			}
-			else{
-				    TimerEntryIndex=0;
-            ClearTimerArray();
-			
-			}
-			if(TimerEntryIndex ==2){ // IF Reached our maximum letter
-					TimerEntryIndex = 0;
-				  predict =1;
-          //////// Call The Method that calculates the ecludien distance in here 					
-				
-				}
-		  TH0 = 0;                //Reset the timer.
-		  TL0 = 0;	
-			TF0=0;
-			StartCount=0;
-			OverFlowCount=0;
-		}	
- 
-}
-void CalculateTime(){
-	if( switch_training){
-	  calculateTestTime();
-	
-	}
-
-	if(StartCount==0 &&StartTraining==1){ 
+void TimerMethod(){
 			  OverFlowCount = 0;
 
 			TR0 = 1;            //Start the timer
@@ -160,12 +117,42 @@ void CalculateTime(){
             ClearTimerArray();
 			
 			}
+}
+void calculateTestTime(){
+	
+			if(StartCount==0 &&StartTraining==1){ 
+			  TimerMethod();
+			if(TimerEntryIndex ==2){ // IF Reached our maximum letter
+					TimerEntryIndex = 0;
+					CalculateAverage(TimerArray,1);
+
+				  predict =1;
+          //////// Call The Method that calculates the ecludien distance in here 					
+				
+				}
+		  TH0 = 0;                //Reset the timer.
+		  TL0 = 0;	
+			TF0=0;
+			StartCount=0;
+			OverFlowCount=0;
+		}	
+ 
+}
+void CalculateTime(){
+	if( switch_training){
+	  calculateTestTime();
+	
+	}
+
+	if(StartCount==0 &&StartTraining==1){ 
+		TimerMethod();
+
 			if(TimerEntryIndex ==2){ // IF Reached our maximum letter
 					TimerEntryIndex = 0;
 					if(trainingCount==2) // if we finished Training for user A to be changed to 5
 					{
 						trainingCount = 0; 
-						CalculateAverage(TimerArray);
+						CalculateAverage(TimerArray,numberOfTrainings);
 						ClearTimerArray();
 						if(!switch_user){ // If we r still in User A
 						switch_user=1; //Go to b
