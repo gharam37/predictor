@@ -69,6 +69,11 @@ void calculateTestTime(){
 				TimerEntryIndex++;
 
 			}
+			else{
+				    TimerEntryIndex=0;
+            ClearTimerArray();
+			
+			}
 			if(TimerEntryIndex ==2){ // IF Reached our maximum letter
 					TimerEntryIndex = 0;
           //////// Call The Method that calculates the ecludien distance in here 					
@@ -95,7 +100,9 @@ void CalculateTime(){
 
 			while(StartCount == 0  ){
 				    while(TF0 == 0);   // Wait for Timer Overflow
+				    if(CorrectSofar==1){
 				    OverFlowCount++;
+						}
             TF0 = 0;
 			}				//wait till the key is released
 			TR0 = 0;            //Stop the timer
@@ -103,6 +110,11 @@ void CalculateTime(){
 			TimerArray[TimerEntryIndex]=+((TH0 << 8) | TL0)+0x0000FFFF*OverFlowCount; //Load timer into Array
 				TimerEntryIndex++;
 
+			}
+			else{
+				    TimerEntryIndex=0;
+            ClearTimerArray();
+			
 			}
 			if(TimerEntryIndex ==2){ // IF Reached our maximum letter
 					TimerEntryIndex = 0;
@@ -170,7 +182,8 @@ void decide(unsigned char received){
     CorrectSofar = 0;
 		TimerArray[0]=0;
     TimerArray[1]=0;
-
+    TimerEntryIndex=0;
+		trainingCount=0;
 		//printf("%s","type the word again please");
 		return;
 	}
