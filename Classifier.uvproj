@@ -46,7 +46,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\Objects\</OutputDirectory>
-          <OutputName>BehaveBiometricClassifier</OutputName>
+          <OutputName>Classifier</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
@@ -382,9 +382,9 @@
               <FilePath>.\STARTUP.A51</FilePath>
             </File>
             <File>
-              <FileName>Program.c</FileName>
+              <FileName>classifier.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\Program.c</FilePath>
+              <FilePath>.\classifier.c</FilePath>
             </File>
           </Files>
         </Group>

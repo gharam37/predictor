@@ -1,0 +1,415 @@
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    11/19/2018  12:36:55  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
+C:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\STARTUP.obj, .\Objects\classifier.obj TO .\Objects\Classifier PRINT (.\Listings\Cl
+>> assifier.m51)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\STARTUP.obj (?C_STARTUP)
+  .\Objects\classifier.obj (CLASSIFIER)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_INIT)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?ILDOPTR)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?ISTOPTR)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?LMUL)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?LLDIDATA)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?LSTIDATA)
+
+
+LINK MAP OF MODULE:  .\Objects\Classifier (?C_STARTUP)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0027H     UNIT         ?DT?CLASSIFIER
+            DATA    002FH     000DH     UNIT         _DATA_GROUP_
+            IDATA   003CH     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+                    0003H     0020H                  *** GAP ***
+            CODE    0023H     0003H     ABSOLUTE     
+                    0026H     07DAH                  *** GAP ***
+            CODE    0800H     00D7H     UNIT         ?PR?CALCULATETIME?CLASSIFIER
+            CODE    08D7H     00CCH     UNIT         ?C?LIB_CODE
+            CODE    09A3H     00B1H     UNIT         ?PR?CALCULATETESTTIME?CLASSIFIER
+            CODE    0A54H     00A6H     UNIT         ?PR?_CALCULATEAVERAGE?CLASSIFIER
+            CODE    0AFAH     008EH     UNIT         ?PR?_DECIDE?CLASSIFIER
+            CODE    0B88H     008CH     UNIT         ?C_C51STARTUP
+            CODE    0C14H     0045H     UNIT         ?PR?RECEIVE?CLASSIFIER
+            CODE    0C59H     0037H     UNIT         ?C_INITSEG
+            CODE    0C90H     0017H     UNIT         ?PR?UARTCONFIG?CLASSIFIER
+            CODE    0CA7H     000CH     UNIT         ?PR?CLEARTIMERARRAY?CLASSIFIER
+            CODE    0CB3H     0008H     UNIT         ?PR?MAIN?CLASSIFIER
+            CODE    0CBBH     0001H     UNIT         ?PR?RUNTRAINING?CLASSIFIER
+            CODE    0CBCH     0001H     UNIT         ?PR?PREDICT?CLASSIFIER
+            CODE    0CBDH     0001H     UNIT         ?PR?CALCULATETRAINTIME?CLASSIFIER
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\Classifier (?C_STARTUP)
+
+
+SEGMENT                                     DATA_GROUP 
+  +--> CALLED SEGMENT                     START    LENGTH
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  11/19/2018  12:36:55  PAGE 2
+
+
+---------------------------------------------------------
+?C_C51STARTUP                             -----    -----
+  +--> ?PR?MAIN?CLASSIFIER
+  +--> ?C_INITSEG
+
+?PR?MAIN?CLASSIFIER                       -----    -----
+  +--> ?PR?UARTCONFIG?CLASSIFIER
+  +--> ?PR?CALCULATETIME?CLASSIFIER
+
+?PR?CALCULATETIME?CLASSIFIER              002FH    0004H
+  +--> ?PR?CALCULATETESTTIME?CLASSIFIER
+  +--> ?PR?_CALCULATEAVERAGE?CLASSIFIER
+  +--> ?PR?CLEARTIMERARRAY?CLASSIFIER
+
+?PR?CALCULATETESTTIME?CLASSIFIER          0038H    0004H
+
+?PR?_CALCULATEAVERAGE?CLASSIFIER          0033H    0005H
+
+*** NEW ROOT ***************************************************
+
+?PR?RECEIVE?CLASSIFIER                    -----    -----
+  +--> ?PR?_DECIDE?CLASSIFIER
+
+?PR?_DECIDE?CLASSIFIER                    -----    -----
+  +--> ?PR?CALCULATETESTTIME?CLASSIFIER
+  +--> ?PR?PREDICT?CLASSIFIER
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\Classifier (?C_STARTUP)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        ?C_STARTUP
+  C:0B88H         SEGMENT       ?C_C51STARTUP
+  I:003CH         SEGMENT       ?STACK
+  C:0000H         PUBLIC        ?C_STARTUP
+  D:00E0H         SYMBOL        ACC
+  D:00F0H         SYMBOL        B
+  D:0083H         SYMBOL        DPH
+  D:0082H         SYMBOL        DPL
+  N:0000H         SYMBOL        IBPSTACK
+  N:0100H         SYMBOL        IBPSTACKTOP
+  N:0080H         SYMBOL        IDATALEN
+  C:0B8BH         SYMBOL        IDATALOOP
+  N:0000H         SYMBOL        PBPSTACK
+  N:0100H         SYMBOL        PBPSTACKTOP
+  N:0000H         SYMBOL        PDATALEN
+  N:0000H         SYMBOL        PDATASTART
+  N:0000H         SYMBOL        PPAGE
+  N:0000H         SYMBOL        PPAGEENABLE
+  D:00A0H         SYMBOL        PPAGE_SFR
+  D:0081H         SYMBOL        SP
+  C:0B88H         SYMBOL        STARTUP1
+  N:0000H         SYMBOL        XBPSTACK
+  N:0000H         SYMBOL        XBPSTACKTOP
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  11/19/2018  12:36:55  PAGE 3
+
+
+  N:0000H         SYMBOL        XDATALEN
+  N:0000H         SYMBOL        XDATASTART
+  C:0000H         LINE#         126
+  C:0B88H         LINE#         133
+  C:0B8AH         LINE#         134
+  C:0B8BH         LINE#         135
+  C:0B8CH         LINE#         136
+  C:0B8EH         LINE#         185
+  C:0B91H         LINE#         196
+  -------         ENDMOD        ?C_STARTUP
+
+  -------         MODULE        CLASSIFIER
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0008H         PUBLIC        SecondUserData
+  D:0010H         PUBLIC        TimerArray
+  D:00A8H         PUBLIC        IE
+  D:0018H         PUBLIC        TimerEntryIndex
+  C:0C90H         PUBLIC        uartConfig
+  C:0CBBH         PUBLIC        runTraining
+  B:0098H.0       PUBLIC        RI
+  D:001AH         PUBLIC        StartCount
+  C:0800H         PUBLIC        CalculateTime
+  C:0CB3H         PUBLIC        main
+  D:001CH         PUBLIC        FirstUserData
+  D:0099H         PUBLIC        SBUF
+  D:0087H         PUBLIC        PCON
+  D:0098H         PUBLIC        SCON
+  D:0089H         PUBLIC        TMOD
+  D:0024H         PUBLIC        switch_user
+  D:0025H         PUBLIC        word
+  D:0028H         PUBLIC        nextChar
+  C:0CBDH         PUBLIC        calculateTrainTime
+  B:0088H.5       PUBLIC        TF0
+  D:008CH         PUBLIC        TH0
+  D:008DH         PUBLIC        TH1
+  D:008AH         PUBLIC        TL0
+  D:0029H         PUBLIC        StartTraining
+  C:0A54H         PUBLIC        _CalculateAverage
+  D:002BH         PUBLIC        CorrectSofar
+  B:0088H.4       PUBLIC        TR0
+  B:0088H.6       PUBLIC        TR1
+  D:002DH         PUBLIC        switch_training
+  C:0AFAH         PUBLIC        _decide
+  C:0C14H         PUBLIC        receive
+  C:09A3H         PUBLIC        calculateTestTime
+  D:002EH         PUBLIC        trainingCount
+  C:0CBCH         PUBLIC        predict
+  C:0CA7H         PUBLIC        ClearTimerArray
+  -------         PROC          _CALCULATEAVERAGE
+  D:0033H         SYMBOL        Values
+  -------         DO            
+  D:0036H         SYMBOL        i
+  -------         ENDDO         
+  C:0A54H         LINE#         18
+  C:0A5AH         LINE#         19
+  C:0A5AH         LINE#         20
+  C:0A5FH         LINE#         21
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  11/19/2018  12:36:55  PAGE 4
+
+
+  C:0A5FH         LINE#         22
+  C:0A63H         LINE#         23
+  C:0AA7H         LINE#         24
+  C:0ABFH         LINE#         25
+  C:0AC1H         LINE#         26
+  C:0AC1H         LINE#         27
+  C:0AE8H         LINE#         28
+  C:0AE8H         LINE#         30
+  C:0AF9H         LINE#         33
+  -------         ENDPROC       _CALCULATEAVERAGE
+  -------         PROC          CLEARTIMERARRAY
+  -------         DO            
+  D:0006H         SYMBOL        i
+  -------         ENDDO         
+  C:0CA7H         LINE#         34
+  C:0CA7H         LINE#         35
+  C:0CA9H         LINE#         36
+  C:0CA9H         LINE#         37
+  C:0CB2H         LINE#         39
+  -------         ENDPROC       CLEARTIMERARRAY
+  -------         PROC          RUNTRAINING
+  C:0CBBH         LINE#         40
+  -------         ENDPROC       RUNTRAINING
+  -------         PROC          PREDICT
+  C:0CBCH         LINE#         42
+  C:0CBCH         LINE#         44
+  -------         ENDPROC       PREDICT
+  -------         PROC          CALCULATETRAINTIME
+  C:0CBDH         LINE#         48
+  C:0CBDH         LINE#         53
+  -------         ENDPROC       CALCULATETRAINTIME
+  -------         PROC          CALCULATETESTTIME
+  -------         DO            
+  D:0038H         SYMBOL        OverFlowCount
+  -------         ENDDO         
+  C:09A3H         LINE#         55
+  C:09A3H         LINE#         57
+  C:09B7H         LINE#         58
+  C:09BFH         LINE#         60
+  C:09C1H         LINE#         62
+  C:09C7H         LINE#         63
+  C:09CAH         LINE#         64
+  C:09DFH         LINE#         65
+  C:09E1H         LINE#         66
+  C:09E3H         LINE#         67
+  C:09E5H         LINE#         68
+  C:09EDH         LINE#         69
+  C:0A2CH         LINE#         70
+  C:0A34H         LINE#         72
+  C:0A34H         LINE#         73
+  C:0A3CH         LINE#         74
+  C:0A40H         LINE#         77
+  C:0A40H         LINE#         78
+  C:0A43H         LINE#         79
+  C:0A45H         LINE#         80
+  C:0A47H         LINE#         81
+  C:0A4BH         LINE#         82
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  11/19/2018  12:36:55  PAGE 5
+
+
+  C:0A53H         LINE#         83
+  C:0A53H         LINE#         85
+  -------         ENDPROC       CALCULATETESTTIME
+  -------         PROC          CALCULATETIME
+  -------         DO            
+  D:002FH         SYMBOL        OverFlowCount
+  -------         ENDDO         
+  C:0800H         LINE#         86
+  C:0800H         LINE#         87
+  C:0804H         LINE#         88
+  C:0807H         LINE#         90
+  C:0807H         LINE#         92
+  C:081BH         LINE#         93
+  C:0823H         LINE#         95
+  C:0825H         LINE#         97
+  C:082BH         LINE#         98
+  C:082EH         LINE#         99
+  C:0843H         LINE#         100
+  C:0845H         LINE#         101
+  C:0847H         LINE#         102
+  C:0849H         LINE#         103
+  C:0851H         LINE#         104
+  C:0890H         LINE#         105
+  C:0898H         LINE#         107
+  C:0898H         LINE#         108
+  C:08A0H         LINE#         109
+  C:08A4H         LINE#         110
+  C:08AAH         LINE#         111
+  C:08AAH         LINE#         112
+  C:08ACH         LINE#         113
+  C:08B4H         LINE#         114
+  C:08B7H         LINE#         115
+  C:08BBH         LINE#         116
+  C:08BEH         LINE#         117
+  C:08C0H         LINE#         118
+  C:08C0H         LINE#         119
+  C:08C3H         LINE#         120
+  C:08C3H         LINE#         121
+  C:08C3H         LINE#         123
+  C:08C3H         LINE#         124
+  C:08C6H         LINE#         125
+  C:08C8H         LINE#         126
+  C:08CAH         LINE#         127
+  C:08CEH         LINE#         128
+  C:08D6H         LINE#         129
+  C:08D6H         LINE#         131
+  -------         ENDPROC       CALCULATETIME
+  -------         PROC          UARTCONFIG
+  C:0C90H         LINE#         133
+  C:0C90H         LINE#         135
+  C:0C93H         LINE#         136
+  C:0C96H         LINE#         145
+  C:0C99H         LINE#         149
+  C:0C9CH         LINE#         150
+  C:0C9FH         LINE#         151
+  C:0CA1H         LINE#         152
+  C:0CA4H         LINE#         153
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  11/19/2018  12:36:55  PAGE 6
+
+
+  C:0CA6H         LINE#         154
+  -------         ENDPROC       UARTCONFIG
+  -------         PROC          _DECIDE
+  D:0007H         SYMBOL        received
+  -------         DO            
+  D:0004H         SYMBOL        idx
+  -------         ENDDO         
+  C:0AFAH         LINE#         157
+  C:0AFAH         LINE#         159
+  C:0AFDH         LINE#         160
+  C:0AFDH         LINE#         161
+  C:0B05H         LINE#         162
+  C:0B0AH         LINE#         163
+  C:0B0CH         LINE#         164
+  C:0B0CH         LINE#         165
+  C:0B17H         LINE#         167
+  C:0B1FH         LINE#         168
+  C:0B1FH         LINE#         169
+  C:0B22H         LINE#         170
+  C:0B27H         LINE#         171
+  C:0B2BH         LINE#         172
+  C:0B33H         LINE#         173
+  C:0B3CH         LINE#         177
+  C:0B3CH         LINE#         179
+  C:0B42H         LINE#         180
+  C:0B48H         LINE#         181
+  C:0B4EH         LINE#         183
+  C:0B52H         LINE#         187
+  C:0B52H         LINE#         188
+  C:0B55H         LINE#         189
+  C:0B55H         LINE#         191
+  C:0B57H         LINE#         192
+  C:0B60H         LINE#         193
+  C:0B64H         LINE#         194
+  C:0B64H         LINE#         198
+  C:0B6AH         LINE#         199
+  C:0B6CH         LINE#         200
+  C:0B70H         LINE#         201
+  C:0B74H         LINE#         202
+  C:0B76H         LINE#         204
+  C:0B78H         LINE#         205
+  C:0B78H         LINE#         206
+  C:0B7BH         LINE#         208
+  C:0B7BH         LINE#         209
+  C:0B7BH         LINE#         211
+  C:0B81H         LINE#         214
+  C:0B83H         LINE#         215
+  C:0B87H         LINE#         226
+  C:0B87H         LINE#         228
+  -------         ENDPROC       _DECIDE
+  -------         PROC          RECEIVE
+  -------         DO            
+  D:0007H         SYMBOL        received
+  -------         ENDDO         
+  C:0C14H         LINE#         231
+  C:0C31H         LINE#         232
+  C:0C33H         LINE#         233
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  11/19/2018  12:36:55  PAGE 7
+
+
+  C:0C35H         LINE#         234
+  C:0C3BH         LINE#         237
+  C:0C3EH         LINE#         238
+  -------         ENDPROC       RECEIVE
+  -------         PROC          MAIN
+  C:0CB3H         LINE#         244
+  C:0CB3H         LINE#         248
+  C:0CB6H         LINE#         250
+  C:0CB6H         LINE#         251
+  C:0CB6H         LINE#         252
+  C:0CB9H         LINE#         254
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        CLASSIFIER
+
+  -------         MODULE        ?C?ILDOPTR
+  C:08D7H         PUBLIC        ?C?ILDOPTR
+  -------         ENDMOD        ?C?ILDOPTR
+
+  -------         MODULE        ?C?ISTOPTR
+  C:090FH         PUBLIC        ?C?ISTOPTR
+  -------         ENDMOD        ?C?ISTOPTR
+
+  -------         MODULE        ?C?LMUL
+  C:093CH         PUBLIC        ?C?LMUL
+  -------         ENDMOD        ?C?LMUL
+
+  -------         MODULE        ?C?LLDIDATA
+  C:098BH         PUBLIC        ?C?LLDIDATA
+  -------         ENDMOD        ?C?LLDIDATA
+
+  -------         MODULE        ?C?LSTIDATA
+  C:0997H         PUBLIC        ?C?LSTIDATA
+  -------         ENDMOD        ?C?LSTIDATA
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?RUNTRAINING?CLASSIFIER
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?CALCULATETRAINTIME?CLASSIFIER
+
+*** WARNING L15: MULTIPLE CALL TO SEGMENT
+    SEGMENT: ?PR?CALCULATETESTTIME?CLASSIFIER
+    CALLER1: ?C_C51STARTUP
+    CALLER2: ?PR?RECEIVE?CLASSIFIER
+
+******************************************************************************
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 0377H BYTE (43%) *
+******************************************************************************
+
+Program Size: data=61.0 xdata=0 code=1220
+LINK/LOCATE RUN COMPLETE.  3 WARNING(S),  0 ERROR(S)

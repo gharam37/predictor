@@ -1,0 +1,4 @@
+".\Objects\STARTUP.obj",
+".\Objects\classifier.obj" 
+TO ".\Objects\Classifier" 
+PRINT(".\Listings\Classifier.m51")

@@ -1,4 +1,4 @@
-﻿#include <reg51.h>
+#include <reg51.h>
 #include<stdio.h>
 
 //Feel free to change methods declarations
