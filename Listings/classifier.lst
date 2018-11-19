@@ -1,4 +1,4 @@
-C51 COMPILER V9.59.0.0   CLASSIFIER                                                        11/19/2018 14:08:50 PAGE 1   
+C51 COMPILER V9.59.0.0   CLASSIFIER                                                        11/19/2018 16:10:06 PAGE 1   
 
 
 C51 COMPILER V9.59.0.0, COMPILATION OF MODULE CLASSIFIER
@@ -11,295 +11,323 @@ line level    source
 *** WARNING C500 IN LINE 1 OF classifier.c: INCORRECT LICENSE ID CODE (LIC) IN 'TOOLS.INI'
    1          #include <reg51.h>
    2          
-   3          //Feel free to change methods declarations
-   4          unsigned char switch_training;  // 0: training, 1: testing
-   5          unsigned char switch_user;      // 0: User A, 1: User B
-   6          unsigned char trainingCount;    // Counts how many times did we get measurements from the user. Starts with 
+   3          bit switch_training;  // 0: training, 1: testing
+   4          bit switch_user;      // 0: User A, 1: User B
+   5          unsigned char trainingCount;    // Counts how many times did we get measurements from the user. Starts with 
              -0.
-   7          unsigned char nextChar=0; // identifies which character we expect the user to enter (index of the characte
+   6          unsigned char nextChar=0; // identifies which character we expect the user to enter (index of the characte
              -r) starts with 0.
-   8          unsigned char word[3] = {'.','t','i'};  // Stores the characters of the word we want to use.
-   9          unsigned int TimerEntryIndex = 0;  //Initial Time at which we started Program
-  10          int StartCount = 2;  //Initial Time at which we started Program 2 means not in count mode 0-1 meaning we a
-             -re waiting for input
-  11          int CorrectSofar = 0;
-  12          int StartTraining=0; // To Stop overflow and counter from increasing when we aren't putting input .. betwe
+   7          unsigned char word[3] = {'.','t','i'};  // Stores the characters of the word we want to use.
+   8          unsigned char TimerEntryIndex = 0;  //Initial Time at which we started Program
+   9          char StartCount = 2;  //Initial Time at which we started Program 2 means not in count mode 0-1 meaning we 
+             -are waiting for input
+  10          bit CorrectSofar = 0;
+  11          bit StartTraining=0; // To Stop overflow and counter from increasing when we aren't putting input .. betwe
              -en 2 runs of entering a work
-  13          unsigned long TimerArray[2] = {0,0};
-  14          unsigned long FirstUserData[2] = {0,0}; // should change to 9
-  15          unsigned long SecondUserData[2] = {0,0}; // should change to 9
-  16          long double num = 9000000000000000000;
-  17          void CalculateAverage(unsigned long Values[])
-  18          {
-  19   1        int i =0;
-  20   1        for(;i<2;i++){ //Length of array should change to 10
-  21   2          if(switch_user==0){
-  22   3          FirstUserData[i]+=Values[i]/2000; //Divide by the number of training should change to 5 
-  23   3            Values[i] = 0; //Clear for next Count
-  24   3          }
-  25   2          else{
-  26   3            SecondUserData[i]=Values[i]/2000;
-  27   3          }
-  28   2            
-  29   2        }
-  30   1        
-  31   1        
-  32   1      }
-  33          void ClearTimerArray(){
-  34   1        int i=0;
-  35   1        for(;i<2;i++)
-  36   1          TimerArray[i]=0;
-  37   1      
-  38   1      }
-  39          void runTraining(){}
-  40          // called when the user enters the whole word in the testing phase it should predict who was the user
-  41          void predict(){
-  42   1       
+  12          unsigned long TimerArray[2] = {0,0};
+  13          unsigned long FirstUserData[2] = {0,0}; // should change to 9
+  14          unsigned long SecondUserData[2] = {0,0}; // should change to 9
+  15          unsigned long OverFlowCount;
+  16          bit predict= 0;
+  17          unsigned char size = 3;
+  18          unsigned char numberOfTrainings = 2;
+  19          sbit LED = P0^0;
+  20          unsigned char bound=0;
+  21          unsigned char c = 0; //To increase maximum timer delay time int bound = 0; //Changes how long LED flashes 
+             -depending on user
+  22          void CalculateAverage(unsigned char value)
+  23          {
+  24   1        int i =0;
+  25   1        for(;i<2;i++){ //Length of array should change to 10
+  26   2          if(switch_user==0){
+  27   3          FirstUserData[i]+=TimerArray[i]/(value*1000);; //Divide by the number of training should change to 5 
+  28   3            //TimerArray[i] = 0; //Clear for next Count
+  29   3          }
+  30   2          else{
+  31   3            SecondUserData[i]=TimerArray[i]/(value*1000);
+  32   3          }
+  33   2            
+  34   2        }
+  35   1        
+  36   1        
+  37   1      }
+  38          void ClearTimerArray(){
+  39   1        int i=0;
+  40   1        for(;i<2;i++)
+  41   1          TimerArray[i]=0;
+  42   1      
   43   1      }
-  44           
-  45           // TODO: you know what character did we actually read now (using the variable nextChar [it is an index to
-             - the character]) so you should measure the flight time and add it to training
-  46          // for the current user and same for the test time
-  47          void calculateTrainTime(){
-  48   1      
-C51 COMPILER V9.59.0.0   CLASSIFIER                                                        11/19/2018 14:08:50 PAGE 2   
+  44          
+  45          void flashUserA() {
+  46   1        bound = 30;
+  47   1        TMOD = 0x01;
+  48   1        TH0 = 0x0;
+C51 COMPILER V9.59.0.0   CLASSIFIER                                                        11/19/2018 16:10:06 PAGE 2   
 
-  49   1        
-  50   1      
-  51   1       
-  52   1      }
-  53           
-  54          void calculateTestTime(){
-  55   1        
-  56   1            if(StartCount==0 &&StartTraining==1){ 
-  57   2             unsigned long OverFlowCount = 0;
-  58   2      
-  59   2            TR0 = 1;            //Start the timer
-  60   2      
-  61   2            while(StartCount == 0  ){
-  62   3                  while(TF0 == 0);   // Wait for Timer Overflow
-  63   3                  OverFlowCount++;
-  64   3                  TF0 = 0;
-  65   3            }       //wait till the key is released
-  66   2            TR0 = 0;            //Stop the timer
-  67   2            if(CorrectSofar == 1){
-  68   3            TimerArray[TimerEntryIndex]=(((TH0 << 8) | TL0)+0x0000FFFF*OverFlowCount)/1000; //Load timer into Array
-  69   3              TimerEntryIndex++;
-  70   3      
-  71   3            }
-  72   2            else{
-  73   3                  TimerEntryIndex=0;
-  74   3                  ClearTimerArray();
-  75   3            
-  76   3            }
-  77   2            if(TimerEntryIndex ==2){ // IF Reached our maximum letter
-  78   3                TimerEntryIndex = 0;
-  79   3                //////// Call The Method that calculates the ecludien distance in here          
-  80   3              
-  81   3              }
-  82   2            TH0 = 0;                //Reset the timer.
-  83   2            TL0 = 0;  
-  84   2            TF0=0;
-  85   2            StartCount=0;
-  86   2            OverFlowCount=0;
-  87   2          } 
-  88   1       
-  89   1      }
-  90          void CalculateTime(){
-  91   1        if( switch_training){
-  92   2          calculateTestTime();
-  93   2        
+  49   1        TL0 = 0x0;
+  50   1        TR0 = 1;
+  51   1        ET0 = 1;
+  52   1        EA = 1;
+  53   1        while(1){
+  54   2        }
+  55   1      }
+  56          
+  57          void flashUserB(){
+  58   1        bound = 5;
+  59   1        TMOD = 0x01;
+  60   1        TH0 = 0x0;
+  61   1        TL0 = 0x0;
+  62   1        TR0 = 1;
+  63   1        ET0 = 1;
+  64   1        EA = 1;
+  65   1        while(1){
+  66   2        }
+  67   1      }
+  68          
+  69          void determineUser() {
+  70   1        unsigned long dA = 0;
+  71   1        unsigned long dB = 0;
+  72   1        char i=0;
+  73   1        for(; i<size-1; i++) {
+  74   2          dA += (TimerArray[i] - FirstUserData[i])*(TimerArray[i] - FirstUserData[i]);
+  75   2          dB += (TimerArray[i] - SecondUserData[i])*(TimerArray[i] - SecondUserData[i]);
+  76   2        }
+  77   1        
+  78   1        if(dA < dB)
+  79   1          flashUserA();
+  80   1        else
+  81   1          flashUserB();
+  82   1      }
+  83          
+  84          void timer0_isr() interrupt 1{
+  85   1        if(c == bound) {
+  86   2          c = 0;
+  87   2          TH0 = 0x0;
+  88   2          TL0 = 0x0;
+  89   2          LED = !LED;
+  90   2        } else {
+  91   2            c++;
+  92   2            TH0 = 0x0;
+  93   2            TL0 = 0x0;
   94   2        }
-  95   1      
-  96   1        if(StartCount==0 &&StartTraining==1){ 
-  97   2             unsigned long OverFlowCount = 0;
-  98   2      
-  99   2            TR0 = 1;            //Start the timer
- 100   2      
- 101   2            while(StartCount == 0  ){
- 102   3                  while(TF0 == 0);   // Wait for Timer Overflow
- 103   3                  if(CorrectSofar==1){
- 104   4                  OverFlowCount++;
- 105   4                  }
- 106   3                  TF0 = 0;
- 107   3            }       //wait till the key is released
- 108   2            TR0 = 0;            //Stop the timer
- 109   2            if(CorrectSofar == 1){
- 110   3            TimerArray[TimerEntryIndex]=+((TH0 << 8) | TL0)+0x0000FFFF*OverFlowCount; //Load timer into Array
-C51 COMPILER V9.59.0.0   CLASSIFIER                                                        11/19/2018 14:08:50 PAGE 3   
+  95   1      }
+  96          
+  97          void TimerMethod(){
+  98   1              OverFlowCount = 0;
+  99   1      
+ 100   1            TR0 = 1;            //Start the timer
+ 101   1      
+ 102   1            while(StartCount == 0  ){
+ 103   2                  while(TF0 == 0);   // Wait for Timer Overflow
+ 104   2                  if(CorrectSofar==1){
+ 105   3                  OverFlowCount++;
+ 106   3                  }
+ 107   2                  TF0 = 0;
+ 108   2            }       //wait till the key is released
+ 109   1            TR0 = 0;            //Stop the timer
+ 110   1            if(CorrectSofar == 1){
+C51 COMPILER V9.59.0.0   CLASSIFIER                                                        11/19/2018 16:10:06 PAGE 3   
 
- 111   3              TimerEntryIndex++;
- 112   3      
- 113   3            }
- 114   2            else{
- 115   3                  TimerEntryIndex=0;
- 116   3                  ClearTimerArray();
- 117   3            
- 118   3            }
- 119   2            if(TimerEntryIndex ==2){ // IF Reached our maximum letter
- 120   3                TimerEntryIndex = 0;
- 121   3                if(trainingCount==2) // if we finished Training for user A to be changed to 5
- 122   3                {
- 123   4                  trainingCount = 0; 
- 124   4                  CalculateAverage(TimerArray);
- 125   4                  ClearTimerArray();
- 126   4                  if(!switch_user){ // If we r still in User A
- 127   5                  switch_user=1; //Go to b
- 128   5                  }
- 129   4                  else{
- 130   5                     switch_training = 1; // If we finished B .. go to training
- 131   5                  }
- 132   4                }           
- 133   3              
- 134   3              }
- 135   2            TH0 = 0;                //Reset the timer.
- 136   2            TL0 = 0;  
- 137   2            TF0=0;
- 138   2            StartCount=0;
- 139   2            OverFlowCount=0;
- 140   2          } 
- 141   1      
- 142   1      }
- 143          
- 144          void uartConfig(void) {
- 145   1        
- 146   1        SCON  = 0x50;     // Serial Port: Mode 1 (8 bits), use Timer 1 for baudrate, enable reception (bit 4)
- 147   1        IE    = 0x90;     // enable global interrupt and serial receive interrupt
- 148   1        
- 149   1        // Baudrate = 2400 (bits/second ?) => 240 characters per second
- 150   1        // Fosc     = 12 MHz
- 151   1        
- 152   1        // Baudrate = Fosc / (N * (256 ? TH1))
- 153   1        // For (SMOD1 = 0) N = 384 : TH1 = 242.979 => 243 = 0xF3  <- We'll use this value
- 154   1        // For (SMOD1 = 1) N = 192 : TH1 = 229.958 => 230 = 0xE6
- 155   1        
- 156   1        PCON &= 0x7F;     // set SMOD1 in PCON to 0..
- 157   1                          // Tells that we are using N = 384.
- 158   1                          // What does it mean? I don't know xD
- 159   1        
- 160   1        TMOD |= 0x21;     // timer 1, mode 2, 8-bit reload , timer 0 for counting
- 161   1        TH1   = 0xF3;     // baud rate: reload value for 2400 baud @ 12MHz (to change?)
- 162   1        TR1   = 1;        // start timer 1
- 163   1        TL0 = 0x00;              //Initialise TIMER0 in 16 bit mode 
- 164   1        TH0 = 0x00;
- 165   1      }
- 166          
- 167          
- 168          void decide(unsigned char received){
- 169   1        int idx;
- 170   1        for(idx = 0; idx<3; idx++)
- 171   1        {
- 172   2          if(word[idx] == received){
-C51 COMPILER V9.59.0.0   CLASSIFIER                                                        11/19/2018 14:08:50 PAGE 4   
+ 111   2            TimerArray[TimerEntryIndex]=+((TH0 << 8) | TL0)+0x0000FFFF*OverFlowCount; //Load timer into Array
+ 112   2              TimerEntryIndex++;
+ 113   2      
+ 114   2            }
+ 115   1            else{
+ 116   2                  TimerEntryIndex=0;
+ 117   2                  ClearTimerArray();
+ 118   2            
+ 119   2            }
+ 120   1      }
+ 121          void calculateTestTime(){
+ 122   1        
+ 123   1            if(StartCount==0 &&StartTraining==1){ 
+ 124   2              TimerMethod();
+ 125   2            if(TimerEntryIndex ==2){ // IF Reached our maximum letter
+ 126   3                TimerEntryIndex = 0;
+ 127   3                CalculateAverage(1);
+ 128   3      
+ 129   3                predict =1;
+ 130   3                //////// Call The Method that calculates the ecludien distance in here          
+ 131   3              
+ 132   3              }
+ 133   2            TH0 = 0;                //Reset the timer.
+ 134   2            TL0 = 0;  
+ 135   2            TF0=0;
+ 136   2            StartCount=0;
+ 137   2            OverFlowCount=0;
+ 138   2          } 
+ 139   1       
+ 140   1      }
+ 141          void CalculateTime(){
+ 142   1        if( switch_training){
+ 143   2          calculateTestTime();
+ 144   2          return;
+ 145   2        
+ 146   2        }
+ 147   1      
+ 148   1        if(StartCount==0 &&StartTraining==1){ 
+ 149   2          TimerMethod();
+ 150   2      
+ 151   2            if(TimerEntryIndex ==2){ // IF Reached our maximum letter
+ 152   3                TimerEntryIndex = 0;
+ 153   3                if(trainingCount==2) // if we finished Training for user A to be changed to 5
+ 154   3                {
+ 155   4                  trainingCount = 0; 
+ 156   4                  CalculateAverage(numberOfTrainings);
+ 157   4                  ClearTimerArray();
+ 158   4                  if(!switch_user){ // If we r still in User A
+ 159   5                  switch_user=1; //Go to b
+ 160   5                  }
+ 161   4                  else{
+ 162   5                     switch_training = 1; // If we finished B .. go to training
+ 163   5                  }
+ 164   4                }           
+ 165   3              
+ 166   3              }
+ 167   2            TH0 = 0;                //Reset the timer.
+ 168   2            TL0 = 0;  
+ 169   2            TF0=0;
+ 170   2            StartCount=0;
+ 171   2            OverFlowCount=0;
+ 172   2          } 
+C51 COMPILER V9.59.0.0   CLASSIFIER                                                        11/19/2018 16:10:06 PAGE 4   
 
- 173   3            CorrectSofar = 0;
- 174   3            break;
- 175   3          }
- 176   2        }
- 177   1        // wrong character
- 178   1        if(idx != nextChar)
- 179   1        {
- 180   2          nextChar = 0;
- 181   2          StartCount=2; //Reset Count
- 182   2          CorrectSofar = 0;
- 183   2          TimerArray[0]=0;
- 184   2          TimerArray[1]=0;
- 185   2          TimerEntryIndex=0;
- 186   2          trainingCount=0;
- 187   2          //printf("%s","type the word again please");
- 188   2          return;
- 189   2        }
- 190   1        // calculate the flight time between this character and the previous one
- 191   1        CorrectSofar = 1;
- 192   1          StartCount=1; 
- 193   1          StartTraining =1 ; //Stop when we finished one work for one user
- 194   1      
- 195   1        if(!switch_training){
- 196   2          
- 197   2        
- 198   2          //calculateTrainTime(); // Called in MainMethod
- 199   2        } else {
- 200   2          calculateTestTime();
- 201   2        }
- 202   1        
- 203   1        nextChar++;
- 204   1        if(nextChar==1){
- 205   2          StartCount=0;
- 206   2        }
- 207   1        // if we reach the last char 
- 208   1        // increment the training count if it is training phase
- 209   1        // call predict if we are in the testing phase
- 210   1        if(nextChar == 3){ //Should Change to 10
- 211   2          nextChar = 0;
- 212   2          StartTraining =0 ; //Stop when we finished one work for one user
- 213   2          if(!switch_training){
- 214   3            trainingCount++;
- 215   3            
- 216   3          }
- 217   2          else{
- 218   3            predict();
- 219   3            return;
- 220   3          } 
+ 173   1      
+ 174   1      }
+ 175          
+ 176          void uartConfig(void) {
+ 177   1        
+ 178   1        SCON  = 0x50;     // Serial Port: Mode 1 (8 bits), use Timer 1 for baudrate, enable reception (bit 4)
+ 179   1        IE    = 0x90;     // enable global interrupt and serial receive interrupt
+ 180   1        
+ 181   1        // Baudrate = 2400 (bits/second ?) => 240 characters per second
+ 182   1        // Fosc     = 12 MHz
+ 183   1        
+ 184   1        // Baudrate = Fosc / (N * (256 ? TH1))
+ 185   1        // For (SMOD1 = 0) N = 384 : TH1 = 242.979 => 243 = 0xF3  <- We'll use this value
+ 186   1        // For (SMOD1 = 1) N = 192 : TH1 = 229.958 => 230 = 0xE6
+ 187   1        
+ 188   1        PCON &= 0x7F;     // set SMOD1 in PCON to 0..
+ 189   1                          // Tells that we are using N = 384.
+ 190   1                          // What does it mean? I don't know xD
+ 191   1        
+ 192   1        TMOD |= 0x21;     // timer 1, mode 2, 8-bit reload , timer 0 for counting
+ 193   1        TH1   = 0xF3;     // baud rate: reload value for 2400 baud @ 12MHz (to change?)
+ 194   1        TR1   = 1;        // start timer 1
+ 195   1        TL0 = 0x00;              //Initialise TIMER0 in 16 bit mode 
+ 196   1        TH0 = 0x00;
+ 197   1      }
+ 198          
+ 199          
+ 200          void decide(unsigned char received){
+ 201   1        int idx;
+ 202   1        for(idx = 0; idx<3; idx++)
+ 203   1        {
+ 204   2          if(word[idx] == received){
+ 205   3            CorrectSofar = 0;
+ 206   3            break;
+ 207   3          }
+ 208   2        }
+ 209   1        // wrong character
+ 210   1        if(idx != nextChar)
+ 211   1        {
+ 212   2          nextChar = 0;
+ 213   2          StartCount=2; //Reset Count
+ 214   2          CorrectSofar = 0;
+ 215   2          TimerArray[0]=0;
+ 216   2          TimerArray[1]=0;
+ 217   2          TimerEntryIndex=0;
+ 218   2          trainingCount=0;
+ 219   2          //printf("%s","type the word again please");
+ 220   2          return;
  221   2        }
- 222   1        //finalizing training after 5 inputs for the word
- 223   1        if(trainingCount == 2){
- 224   2          //runTraining();
- 225   2          //trainingCount = 0;
- 226   2          nextChar = 0;
- 227   2          StartTraining = 0 ; //Stop when we finished a training for one user
- 228   2          // switch to training phase of user B
- 229   2          /*if(!switch_user &&!switch_training){         //Commented Cuz I already do this in my timer 
- 230   2            //printf("%s","user B starts training");
- 231   2            //switch_user = 1;
- 232   2          } else {
- 233   2          // both A and B did the training, switch to testing
- 234   2            //printf("%s","Testing phase started");
-C51 COMPILER V9.59.0.0   CLASSIFIER                                                        11/19/2018 14:08:50 PAGE 5   
+ 222   1        // calculate the flight time between this character and the previous one
+ 223   1        CorrectSofar = 1;
+ 224   1          StartCount=1; 
+ 225   1          StartTraining =1 ; //Stop when we finished one work for one user
+ 226   1      
+ 227   1        if(!switch_training){
+ 228   2          
+ 229   2        
+ 230   2          //calculateTrainTime(); // Called in MainMethod
+ 231   2        } else {
+ 232   2          calculateTestTime();
+ 233   2        }
+ 234   1        
+C51 COMPILER V9.59.0.0   CLASSIFIER                                                        11/19/2018 16:10:06 PAGE 5   
 
- 235   2            switch_training = 1;
- 236   2          }*/ 
- 237   2          
+ 235   1        nextChar++;
+ 236   1        if(nextChar==1){
+ 237   2          StartCount=0;
  238   2        }
- 239   1        
- 240   1      }
- 241          
- 242          // Option 2: interrupt-based
- 243          void receive() interrupt 4 {
- 244   1        unsigned char received = SBUF;
- 245   1         RI = 0;
- 246   1         StartCount =1;
- 247   1      
- 248   1        //printf("%s","Here");
- 249   1        decide(received);
- 250   1      }
- 251          
- 252          // method to read the ports and decide
- 253          
- 254          
- 255          
- 256          void main() {
- 257   1        
- 258   1      
- 259   1        
- 260   1        uartConfig();
- 261   1        
- 262   1        while(1)
- 263   1        {
- 264   2          CalculateTime();
- 265   2            
- 266   2        }
- 267   1        
- 268   1      }
+ 239   1        // if we reach the last char 
+ 240   1        // increment the training count if it is training phase
+ 241   1        // call predict if we are in the testing phase
+ 242   1        if(nextChar == 3){ //Should Change to 10
+ 243   2          nextChar = 0;
+ 244   2          StartTraining =0 ; //Stop when we finished one work for one user
+ 245   2          if(!switch_training){
+ 246   3            trainingCount++;
+ 247   3            
+ 248   3          }
+ 249   2          else{
+ 250   3            //predict();
+ 251   3            return;
+ 252   3          } 
+ 253   2        }
+ 254   1        //finalizing training after 5 inputs for the word
+ 255   1        if(trainingCount == 2){
+ 256   2          //runTraining();
+ 257   2          //trainingCount = 0;
+ 258   2          nextChar = 0;
+ 259   2          StartTraining = 0 ; //Stop when we finished a training for one user
+ 260   2      
+ 261   2          
+ 262   2        }
+ 263   1        
+ 264   1      }
+ 265          
+ 266          
+ 267          void receive() interrupt 4 {
+ 268   1        unsigned char received = SBUF;
+ 269   1         RI = 0;
+ 270   1         StartCount =1;
+ 271   1      
+ 272   1        decide(received);
+ 273   1      }
+ 274          
+ 275          
+ 276          
+ 277          
+ 278          void main() {
+ 279   1        
+ 280   1      
+ 281   1        
+ 282   1        uartConfig();
+ 283   1        
+ 284   1        while(1)
+ 285   1        {
+ 286   2          CalculateTime();
+ 287   2          if(predict){
+ 288   3            determineUser();
+ 289   3            break;
+ 290   3          }
+ 291   2            
+ 292   2        }
+ 293   1        
+ 294   1      }
 
+
+C51 COMPILER V9.59.0.0   CLASSIFIER                                                        11/19/2018 16:10:06 PAGE 6   
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    897    ----
+   CODE SIZE        =   1061    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =     43      13
+   DATA SIZE        =     39      12
    IDATA SIZE       =   ----    ----
-   BIT SIZE         =   ----    ----
+   BIT SIZE         =      5    ----
 END OF MODULE INFORMATION.
 
 

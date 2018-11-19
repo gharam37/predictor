@@ -1,4 +1,4 @@
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    11/19/2018  14:08:51  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                    11/19/2018  16:10:06  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.22.2.0, INVOKED BY:
@@ -13,18 +13,13 @@ INPUT MODULES INCLUDED:
   .\Objects\STARTUP.obj (?C_STARTUP)
   .\Objects\classifier.obj (CLASSIFIER)
   C:\KEIL_V5\C51\LIB\C51S.LIB (?C_INIT)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?IMUL)
   C:\KEIL_V5\C51\LIB\C51S.LIB (?C?LMUL)
   C:\KEIL_V5\C51\LIB\C51S.LIB (?C?ULDIV)
-  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?LLDOPTR)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?ULCMP)
   C:\KEIL_V5\C51\LIB\C51S.LIB (?C?LLDIDATA)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?LLDIDATA0)
   C:\KEIL_V5\C51\LIB\C51S.LIB (?C?LSTIDATA)
-  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?LSTKOPTR)
-  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?LLDXDATA)
-  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?LLDPDATA)
-  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?LLDCODE)
-  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?LSTKIDATA)
-  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?LSTKXDATA)
-  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?LSTKPDATA)
 
 
 LINK MAP OF MODULE:  .\Objects\Classifier (?C_STARTUP)
@@ -35,67 +30,83 @@ LINK MAP OF MODULE:  .\Objects\Classifier (?C_STARTUP)
 
             * * * * * * *   D A T A   M E M O R Y   * * * * * * *
             REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
-            DATA    0008H     002BH     UNIT         ?DT?CLASSIFIER
-            DATA    0033H     000DH     UNIT         _DATA_GROUP_
-            IDATA   0040H     0001H     UNIT         ?STACK
+            DATA    0008H     000CH     UNIT         _DATA_GROUP_
+                    0014H     000CH                  *** GAP ***
+            BIT     0020H.0   0000H.5   UNIT         ?BI?CLASSIFIER
+                    0020H.5   0000H.3                *** GAP ***
+            DATA    0021H     0027H     UNIT         ?DT?CLASSIFIER
+            IDATA   0048H     0001H     UNIT         ?STACK
 
             * * * * * * *   C O D E   M E M O R Y   * * * * * * *
             CODE    0000H     0003H     ABSOLUTE     
-                    0003H     0020H                  *** GAP ***
+                    0003H     0008H                  *** GAP ***
+            CODE    000BH     0003H     ABSOLUTE     
+                    000EH     0015H                  *** GAP ***
             CODE    0023H     0003H     ABSOLUTE     
                     0026H     07DAH                  *** GAP ***
-            CODE    0800H     0214H     UNIT         ?C?LIB_CODE
-            CODE    0A14H     00E9H     UNIT         ?PR?CALCULATETIME?CLASSIFIER
-            CODE    0AFDH     00CCH     UNIT         ?PR?_CALCULATEAVERAGE?CLASSIFIER
-            CODE    0BC9H     00C5H     UNIT         ?PR?CALCULATETESTTIME?CLASSIFIER
-            CODE    0C8EH     0094H     UNIT         ?PR?_DECIDE?CLASSIFIER
-            CODE    0D22H     008CH     UNIT         ?C_C51STARTUP
-            CODE    0DAEH     0045H     UNIT         ?PR?RECEIVE?CLASSIFIER
-            CODE    0DF3H     003DH     UNIT         ?C_INITSEG
-            CODE    0E30H     0017H     UNIT         ?PR?UARTCONFIG?CLASSIFIER
-            CODE    0E47H     000CH     UNIT         ?PR?CLEARTIMERARRAY?CLASSIFIER
-            CODE    0E53H     0008H     UNIT         ?PR?MAIN?CLASSIFIER
-            CODE    0E5BH     0001H     UNIT         ?PR?RUNTRAINING?CLASSIFIER
-            CODE    0E5CH     0001H     UNIT         ?PR?PREDICT?CLASSIFIER
-            CODE    0E5DH     0001H     UNIT         ?PR?CALCULATETRAINTIME?CLASSIFIER
+            CODE    0800H     0165H     UNIT         ?C?LIB_CODE
+            CODE    0965H     0147H     UNIT         ?PR?DETERMINEUSER?CLASSIFIER
+            CODE    0AACH     00B8H     UNIT         ?PR?_CALCULATEAVERAGE?CLASSIFIER
+            CODE    0B64H     008CH     UNIT         ?C_C51STARTUP
+            CODE    0BF0H     0081H     UNIT         ?PR?TIMERMETHOD?CLASSIFIER
+            CODE    0C71H     0073H     UNIT         ?PR?_DECIDE?CLASSIFIER
+            CODE    0CE4H     0048H     UNIT         ?PR?CALCULATETIME?CLASSIFIER
+            CODE    0D2CH     0042H     UNIT         ?PR?RECEIVE?CLASSIFIER
+            CODE    0D6EH     003FH     UNIT         ?C_INITSEG
+            CODE    0DADH     0030H     UNIT         ?PR?CALCULATETESTTIME?CLASSIFIER
+            CODE    0DDDH     0023H     UNIT         ?PR?TIMER0_ISR?CLASSIFIER
+            CODE    0E00H     0017H     UNIT         ?PR?UARTCONFIG?CLASSIFIER
+            CODE    0E17H     0013H     UNIT         ?PR?FLASHUSERA?CLASSIFIER
+            CODE    0E2AH     0013H     UNIT         ?PR?FLASHUSERB?CLASSIFIER
+            CODE    0E3DH     000CH     UNIT         ?PR?CLEARTIMERARRAY?CLASSIFIER
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  11/19/2018  16:10:06  PAGE 2
 
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  11/19/2018  14:08:51  PAGE 2
 
+            CODE    0E49H     000CH     UNIT         ?PR?MAIN?CLASSIFIER
 
 
 
 OVERLAY MAP OF MODULE:   .\Objects\Classifier (?C_STARTUP)
 
 
-SEGMENT                                     DATA_GROUP 
-  +--> CALLED SEGMENT                     START    LENGTH
----------------------------------------------------------
-?C_C51STARTUP                             -----    -----
+SEGMENT                                    DATA_GROUP 
+  +--> CALLED SEGMENT                    START    LENGTH
+--------------------------------------------------------
+?C_C51STARTUP                            -----    -----
   +--> ?PR?MAIN?CLASSIFIER
   +--> ?C_INITSEG
 
-?PR?MAIN?CLASSIFIER                       -----    -----
+?PR?MAIN?CLASSIFIER                      -----    -----
   +--> ?PR?UARTCONFIG?CLASSIFIER
   +--> ?PR?CALCULATETIME?CLASSIFIER
+  +--> ?PR?DETERMINEUSER?CLASSIFIER
 
-?PR?CALCULATETIME?CLASSIFIER              0033H    0004H
+?PR?CALCULATETIME?CLASSIFIER             -----    -----
   +--> ?PR?CALCULATETESTTIME?CLASSIFIER
+  +--> ?PR?TIMERMETHOD?CLASSIFIER
+  +--> ?PR?_CALCULATEAVERAGE?CLASSIFIER
   +--> ?PR?CLEARTIMERARRAY?CLASSIFIER
+
+?PR?CALCULATETESTTIME?CLASSIFIER         -----    -----
+  +--> ?PR?TIMERMETHOD?CLASSIFIER
   +--> ?PR?_CALCULATEAVERAGE?CLASSIFIER
 
-?PR?CALCULATETESTTIME?CLASSIFIER          003CH    0004H
+?PR?TIMERMETHOD?CLASSIFIER               -----    -----
   +--> ?PR?CLEARTIMERARRAY?CLASSIFIER
 
-?PR?_CALCULATEAVERAGE?CLASSIFIER          0037H    0005H
+?PR?_CALCULATEAVERAGE?CLASSIFIER         0011H    0003H
+
+?PR?DETERMINEUSER?CLASSIFIER             0008H    0009H
+  +--> ?PR?FLASHUSERA?CLASSIFIER
+  +--> ?PR?FLASHUSERB?CLASSIFIER
 
 *** NEW ROOT ***************************************************
 
-?PR?RECEIVE?CLASSIFIER                    -----    -----
+?PR?RECEIVE?CLASSIFIER                   -----    -----
   +--> ?PR?_DECIDE?CLASSIFIER
 
-?PR?_DECIDE?CLASSIFIER                    -----    -----
+?PR?_DECIDE?CLASSIFIER                   -----    -----
   +--> ?PR?CALCULATETESTTIME?CLASSIFIER
-  +--> ?PR?PREDICT?CLASSIFIER
 
 
 
@@ -105,9 +116,12 @@ SYMBOL TABLE OF MODULE:  .\Objects\Classifier (?C_STARTUP)
   ----------------------------------
 
   -------         MODULE        ?C_STARTUP
-  C:0D22H         SEGMENT       ?C_C51STARTUP
-  I:0040H         SEGMENT       ?STACK
+  C:0B64H         SEGMENT       ?C_C51STARTUP
+  I:0048H         SEGMENT       ?STACK
   C:0000H         PUBLIC        ?C_STARTUP
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  11/19/2018  16:10:06  PAGE 3
+
+
   D:00E0H         SYMBOL        ACC
   D:00F0H         SYMBOL        B
   D:0083H         SYMBOL        DPH
@@ -115,353 +129,369 @@ SYMBOL TABLE OF MODULE:  .\Objects\Classifier (?C_STARTUP)
   N:0000H         SYMBOL        IBPSTACK
   N:0100H         SYMBOL        IBPSTACKTOP
   N:0080H         SYMBOL        IDATALEN
-  C:0D25H         SYMBOL        IDATALOOP
+  C:0B67H         SYMBOL        IDATALOOP
   N:0000H         SYMBOL        PBPSTACK
   N:0100H         SYMBOL        PBPSTACKTOP
   N:0000H         SYMBOL        PDATALEN
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  11/19/2018  14:08:51  PAGE 3
-
-
   N:0000H         SYMBOL        PDATASTART
   N:0000H         SYMBOL        PPAGE
   N:0000H         SYMBOL        PPAGEENABLE
   D:00A0H         SYMBOL        PPAGE_SFR
   D:0081H         SYMBOL        SP
-  C:0D22H         SYMBOL        STARTUP1
+  C:0B64H         SYMBOL        STARTUP1
   N:0000H         SYMBOL        XBPSTACK
   N:0000H         SYMBOL        XBPSTACKTOP
   N:0000H         SYMBOL        XDATALEN
   N:0000H         SYMBOL        XDATASTART
   C:0000H         LINE#         126
-  C:0D22H         LINE#         133
-  C:0D24H         LINE#         134
-  C:0D25H         LINE#         135
-  C:0D26H         LINE#         136
-  C:0D28H         LINE#         185
-  C:0D2BH         LINE#         196
+  C:0B64H         LINE#         133
+  C:0B66H         LINE#         134
+  C:0B67H         LINE#         135
+  C:0B68H         LINE#         136
+  C:0B6AH         LINE#         185
+  C:0B6DH         LINE#         196
   -------         ENDMOD        ?C_STARTUP
 
   -------         MODULE        CLASSIFIER
   C:0000H         SYMBOL        _ICE_DUMMY_
-  D:0008H         PUBLIC        SecondUserData
-  D:0010H         PUBLIC        TimerArray
+  D:0021H         PUBLIC        SecondUserData
+  D:0080H         PUBLIC        P0
+  C:0DDDH         PUBLIC        timer0_isr
+  B:00A8H.7       PUBLIC        EA
+  D:0029H         PUBLIC        TimerArray
   D:00A8H         PUBLIC        IE
-  D:0018H         PUBLIC        TimerEntryIndex
-  C:0E30H         PUBLIC        uartConfig
-  C:0E5BH         PUBLIC        runTraining
+  D:0031H         PUBLIC        TimerEntryIndex
+  C:0E00H         PUBLIC        uartConfig
+  D:0032H         PUBLIC        bound
   B:0098H.0       PUBLIC        RI
-  D:001AH         PUBLIC        StartCount
-  C:0A14H         PUBLIC        CalculateTime
-  C:0E53H         PUBLIC        main
-  D:001CH         PUBLIC        FirstUserData
+  D:0033H         PUBLIC        StartCount
+  C:0CE4H         PUBLIC        CalculateTime
+  C:0E49H         PUBLIC        main
+  D:0034H         PUBLIC        FirstUserData
   D:0099H         PUBLIC        SBUF
   D:0087H         PUBLIC        PCON
   D:0098H         PUBLIC        SCON
   D:0089H         PUBLIC        TMOD
-  D:0024H         PUBLIC        switch_user
-  D:0025H         PUBLIC        word
-  D:0028H         PUBLIC        nextChar
-  C:0E5DH         PUBLIC        calculateTrainTime
+  B:0020H.0       PUBLIC        switch_user
+  D:003CH         PUBLIC        size
+  D:003DH         PUBLIC        word
+  D:0040H         PUBLIC        nextChar
+  D:0041H         PUBLIC        OverFlowCount
+  B:00A8H.1       PUBLIC        ET0
   B:0088H.5       PUBLIC        TF0
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  11/19/2018  16:10:06  PAGE 4
+
+
   D:008CH         PUBLIC        TH0
   D:008DH         PUBLIC        TH1
   D:008AH         PUBLIC        TL0
-  D:0029H         PUBLIC        num
-  D:002DH         PUBLIC        StartTraining
-  C:0AFDH         PUBLIC        _CalculateAverage
-  D:002FH         PUBLIC        CorrectSofar
+  B:0020H.1       PUBLIC        StartTraining
+  C:0AACH         PUBLIC        _CalculateAverage
+  B:0080H.0       PUBLIC        LED
+  B:0020H.2       PUBLIC        CorrectSofar
   B:0088H.4       PUBLIC        TR0
   B:0088H.6       PUBLIC        TR1
-  D:0031H         PUBLIC        switch_training
-  C:0C8EH         PUBLIC        _decide
-  C:0DAEH         PUBLIC        receive
-  C:0BC9H         PUBLIC        calculateTestTime
-  D:0032H         PUBLIC        trainingCount
-  C:0E5CH         PUBLIC        predict
-  C:0E47H         PUBLIC        ClearTimerArray
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  11/19/2018  14:08:51  PAGE 4
-
-
+  B:0020H.3       PUBLIC        switch_training
+  C:0C71H         PUBLIC        _decide
+  D:0045H         PUBLIC        c
+  C:0965H         PUBLIC        determineUser
+  C:0D2CH         PUBLIC        receive
+  C:0DADH         PUBLIC        calculateTestTime
+  C:0BF0H         PUBLIC        TimerMethod
+  D:0046H         PUBLIC        trainingCount
+  B:0020H.4       PUBLIC        predict
+  C:0E3DH         PUBLIC        ClearTimerArray
+  C:0E17H         PUBLIC        flashUserA
+  C:0E2AH         PUBLIC        flashUserB
+  D:0047H         PUBLIC        numberOfTrainings
   -------         PROC          _CALCULATEAVERAGE
-  D:0037H         SYMBOL        Values
+  D:0011H         SYMBOL        value
   -------         DO            
-  D:003AH         SYMBOL        i
+  D:0012H         SYMBOL        i
   -------         ENDDO         
-  C:0AFDH         LINE#         17
-  C:0B03H         LINE#         18
-  C:0B03H         LINE#         19
-  C:0B08H         LINE#         20
-  C:0B08H         LINE#         21
-  C:0B0CH         LINE#         22
-  C:0B67H         LINE#         23
-  C:0B85H         LINE#         24
-  C:0B87H         LINE#         25
-  C:0B87H         LINE#         26
-  C:0BB7H         LINE#         27
-  C:0BB7H         LINE#         29
-  C:0BC8H         LINE#         32
+  C:0AACH         LINE#         22
+  C:0AAEH         LINE#         23
+  C:0AAEH         LINE#         24
+  C:0AB3H         LINE#         25
+  C:0AB3H         LINE#         26
+  C:0AB6H         LINE#         27
+  C:0B17H         LINE#         29
+  C:0B19H         LINE#         30
+  C:0B19H         LINE#         31
+  C:0B52H         LINE#         32
+  C:0B52H         LINE#         34
+  C:0B63H         LINE#         37
   -------         ENDPROC       _CALCULATEAVERAGE
   -------         PROC          CLEARTIMERARRAY
   -------         DO            
   D:0006H         SYMBOL        i
   -------         ENDDO         
-  C:0E47H         LINE#         33
-  C:0E47H         LINE#         34
-  C:0E49H         LINE#         35
-  C:0E49H         LINE#         36
-  C:0E52H         LINE#         38
+  C:0E3DH         LINE#         38
+  C:0E3DH         LINE#         39
+  C:0E3FH         LINE#         40
+  C:0E3FH         LINE#         41
+  C:0E48H         LINE#         43
   -------         ENDPROC       CLEARTIMERARRAY
-  -------         PROC          RUNTRAINING
-  C:0E5BH         LINE#         39
-  -------         ENDPROC       RUNTRAINING
-  -------         PROC          PREDICT
-  C:0E5CH         LINE#         41
-  C:0E5CH         LINE#         43
-  -------         ENDPROC       PREDICT
-  -------         PROC          CALCULATETRAINTIME
-  C:0E5DH         LINE#         47
-  C:0E5DH         LINE#         52
-  -------         ENDPROC       CALCULATETRAINTIME
-  -------         PROC          CALCULATETESTTIME
+  -------         PROC          FLASHUSERA
+  C:0E17H         LINE#         45
+  C:0E17H         LINE#         46
+  C:0E1AH         LINE#         47
+  C:0E1DH         LINE#         48
+  C:0E20H         LINE#         49
+  C:0E22H         LINE#         50
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  11/19/2018  16:10:06  PAGE 5
+
+
+  C:0E24H         LINE#         51
+  C:0E26H         LINE#         52
+  C:0E28H         LINE#         53
+  C:0E28H         LINE#         54
+  -------         ENDPROC       FLASHUSERA
+  -------         PROC          FLASHUSERB
+  C:0E2AH         LINE#         57
+  C:0E2AH         LINE#         58
+  C:0E2DH         LINE#         59
+  C:0E30H         LINE#         60
+  C:0E33H         LINE#         61
+  C:0E35H         LINE#         62
+  C:0E37H         LINE#         63
+  C:0E39H         LINE#         64
+  C:0E3BH         LINE#         65
+  C:0E3BH         LINE#         66
+  -------         ENDPROC       FLASHUSERB
+  -------         PROC          DETERMINEUSER
   -------         DO            
-  D:003CH         SYMBOL        OverFlowCount
+  D:0008H         SYMBOL        dA
+  D:000CH         SYMBOL        dB
+  D:0010H         SYMBOL        i
   -------         ENDDO         
-  C:0BC9H         LINE#         54
-  C:0BC9H         LINE#         56
-  C:0BDDH         LINE#         57
-  C:0BE5H         LINE#         59
-  C:0BE7H         LINE#         61
-  C:0BEDH         LINE#         62
-  C:0BF0H         LINE#         63
-  C:0C05H         LINE#         64
-  C:0C07H         LINE#         65
-  C:0C09H         LINE#         66
-  C:0C0BH         LINE#         67
-  C:0C13H         LINE#         68
-  C:0C5CH         LINE#         69
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  11/19/2018  14:08:51  PAGE 5
+  C:0965H         LINE#         69
+  C:0965H         LINE#         70
+  C:096EH         LINE#         71
+  C:0976H         LINE#         72
+  C:0978H         LINE#         73
+  C:0998H         LINE#         74
+  C:0A11H         LINE#         75
+  C:0A8AH         LINE#         76
+  C:0A8FH         LINE#         78
+  C:0AA5H         LINE#         79
+  C:0AA8H         LINE#         81
+  C:0AABH         LINE#         82
+  -------         ENDPROC       DETERMINEUSER
+  -------         PROC          TIMER0_ISR
+  C:0DDDH         LINE#         84
+  C:0DE1H         LINE#         85
+  C:0DE6H         LINE#         86
+  C:0DE9H         LINE#         87
+  C:0DECH         LINE#         88
+  C:0DEFH         LINE#         89
+  C:0DF1H         LINE#         90
+  C:0DF3H         LINE#         91
+  C:0DF5H         LINE#         92
+  C:0DF8H         LINE#         93
+  C:0DFBH         LINE#         94
+  C:0DFBH         LINE#         95
+  -------         ENDPROC       TIMER0_ISR
+  -------         PROC          TIMERMETHOD
+  C:0BF0H         LINE#         97
+  C:0BF0H         LINE#         98
+  C:0BF9H         LINE#         100
+  C:0BFBH         LINE#         102
+  C:0C04H         LINE#         103
+  C:0C07H         LINE#         104
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  11/19/2018  16:10:06  PAGE 6
 
 
-  C:0C64H         LINE#         71
-  C:0C66H         LINE#         72
-  C:0C66H         LINE#         73
-  C:0C6BH         LINE#         74
-  C:0C6EH         LINE#         76
-  C:0C6EH         LINE#         77
-  C:0C76H         LINE#         78
-  C:0C7AH         LINE#         81
-  C:0C7AH         LINE#         82
-  C:0C7DH         LINE#         83
-  C:0C7FH         LINE#         84
-  C:0C81H         LINE#         85
-  C:0C85H         LINE#         86
-  C:0C8DH         LINE#         87
-  C:0C8DH         LINE#         89
+  C:0C0AH         LINE#         105
+  C:0C1FH         LINE#         106
+  C:0C1FH         LINE#         107
+  C:0C21H         LINE#         108
+  C:0C23H         LINE#         109
+  C:0C25H         LINE#         110
+  C:0C29H         LINE#         111
+  C:0C68H         LINE#         112
+  C:0C6AH         LINE#         114
+  C:0C6BH         LINE#         115
+  C:0C6BH         LINE#         116
+  C:0C6DH         LINE#         117
+  C:0C70H         LINE#         119
+  C:0C70H         LINE#         120
+  -------         ENDPROC       TIMERMETHOD
+  -------         PROC          CALCULATETESTTIME
+  C:0DADH         LINE#         121
+  C:0DADH         LINE#         123
+  C:0DB9H         LINE#         124
+  C:0DBCH         LINE#         125
+  C:0DC2H         LINE#         126
+  C:0DC4H         LINE#         127
+  C:0DC9H         LINE#         129
+  C:0DCBH         LINE#         132
+  C:0DCBH         LINE#         133
+  C:0DCEH         LINE#         134
+  C:0DD0H         LINE#         135
+  C:0DD2H         LINE#         136
+  C:0DD4H         LINE#         137
+  C:0DDCH         LINE#         138
+  C:0DDCH         LINE#         140
   -------         ENDPROC       CALCULATETESTTIME
   -------         PROC          CALCULATETIME
-  -------         DO            
-  D:0033H         SYMBOL        OverFlowCount
-  -------         ENDDO         
-  C:0A14H         LINE#         90
-  C:0A14H         LINE#         91
-  C:0A18H         LINE#         92
-  C:0A1BH         LINE#         94
-  C:0A1BH         LINE#         96
-  C:0A2FH         LINE#         97
-  C:0A37H         LINE#         99
-  C:0A39H         LINE#         101
-  C:0A3FH         LINE#         102
-  C:0A42H         LINE#         103
-  C:0A4AH         LINE#         104
-  C:0A5FH         LINE#         105
-  C:0A5FH         LINE#         106
-  C:0A61H         LINE#         107
-  C:0A63H         LINE#         108
-  C:0A65H         LINE#         109
-  C:0A6DH         LINE#         110
-  C:0AACH         LINE#         111
-  C:0AB4H         LINE#         113
-  C:0AB6H         LINE#         114
-  C:0AB6H         LINE#         115
-  C:0ABBH         LINE#         116
-  C:0ABEH         LINE#         118
-  C:0ABEH         LINE#         119
-  C:0AC6H         LINE#         120
-  C:0ACAH         LINE#         121
-  C:0AD0H         LINE#         122
-  C:0AD0H         LINE#         123
-  C:0AD2H         LINE#         124
-  C:0ADAH         LINE#         125
-  C:0ADDH         LINE#         126
-  C:0AE1H         LINE#         127
-  C:0AE4H         LINE#         128
-  C:0AE6H         LINE#         129
-  C:0AE6H         LINE#         130
-  C:0AE9H         LINE#         131
-  C:0AE9H         LINE#         132
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  11/19/2018  14:08:51  PAGE 6
+  C:0CE4H         LINE#         141
+  C:0CE4H         LINE#         142
+  C:0CE7H         LINE#         143
+  C:0CEAH         LINE#         146
+  C:0CEAH         LINE#         148
+  C:0CF6H         LINE#         149
+  C:0CF9H         LINE#         151
+  C:0CFFH         LINE#         152
+  C:0D01H         LINE#         153
+  C:0D07H         LINE#         154
+  C:0D07H         LINE#         155
+  C:0D09H         LINE#         156
+  C:0D0EH         LINE#         157
+  C:0D11H         LINE#         158
+  C:0D14H         LINE#         159
+  C:0D16H         LINE#         160
+  C:0D18H         LINE#         161
+  C:0D18H         LINE#         162
+  C:0D1AH         LINE#         163
+  C:0D1AH         LINE#         164
+  C:0D1AH         LINE#         166
+  C:0D1AH         LINE#         167
+  C:0D1DH         LINE#         168
+  C:0D1FH         LINE#         169
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  11/19/2018  16:10:06  PAGE 7
 
 
-  C:0AE9H         LINE#         134
-  C:0AE9H         LINE#         135
-  C:0AECH         LINE#         136
-  C:0AEEH         LINE#         137
-  C:0AF0H         LINE#         138
-  C:0AF4H         LINE#         139
-  C:0AFCH         LINE#         140
-  C:0AFCH         LINE#         142
+  C:0D21H         LINE#         170
+  C:0D23H         LINE#         171
+  C:0D2BH         LINE#         172
+  C:0D2BH         LINE#         174
   -------         ENDPROC       CALCULATETIME
   -------         PROC          UARTCONFIG
-  C:0E30H         LINE#         144
-  C:0E30H         LINE#         146
-  C:0E33H         LINE#         147
-  C:0E36H         LINE#         156
-  C:0E39H         LINE#         160
-  C:0E3CH         LINE#         161
-  C:0E3FH         LINE#         162
-  C:0E41H         LINE#         163
-  C:0E44H         LINE#         164
-  C:0E46H         LINE#         165
+  C:0E00H         LINE#         176
+  C:0E00H         LINE#         178
+  C:0E03H         LINE#         179
+  C:0E06H         LINE#         188
+  C:0E09H         LINE#         192
+  C:0E0CH         LINE#         193
+  C:0E0FH         LINE#         194
+  C:0E11H         LINE#         195
+  C:0E14H         LINE#         196
+  C:0E16H         LINE#         197
   -------         ENDPROC       UARTCONFIG
   -------         PROC          _DECIDE
   D:0007H         SYMBOL        received
   -------         DO            
   D:0004H         SYMBOL        idx
   -------         ENDDO         
-  C:0C8EH         LINE#         168
-  C:0C8EH         LINE#         170
-  C:0C91H         LINE#         171
-  C:0C91H         LINE#         172
-  C:0C99H         LINE#         173
-  C:0C9EH         LINE#         174
-  C:0CA0H         LINE#         175
-  C:0CA0H         LINE#         176
-  C:0CABH         LINE#         178
-  C:0CB3H         LINE#         179
-  C:0CB3H         LINE#         180
-  C:0CB6H         LINE#         181
-  C:0CBBH         LINE#         182
-  C:0CBFH         LINE#         183
-  C:0CC7H         LINE#         184
-  C:0CCFH         LINE#         185
-  C:0CD3H         LINE#         186
-  C:0CD6H         LINE#         189
-  C:0CD6H         LINE#         191
-  C:0CDCH         LINE#         192
-  C:0CE2H         LINE#         193
-  C:0CE8H         LINE#         195
-  C:0CECH         LINE#         199
-  C:0CECH         LINE#         200
-  C:0CEFH         LINE#         201
-  C:0CEFH         LINE#         203
-  C:0CF1H         LINE#         204
-  C:0CFAH         LINE#         205
-  C:0CFEH         LINE#         206
-  C:0CFEH         LINE#         210
-  C:0D04H         LINE#         211
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  11/19/2018  14:08:51  PAGE 7
+  C:0C71H         LINE#         200
+  C:0C71H         LINE#         202
+  C:0C74H         LINE#         203
+  C:0C74H         LINE#         204
+  C:0C7CH         LINE#         205
+  C:0C7EH         LINE#         206
+  C:0C80H         LINE#         207
+  C:0C80H         LINE#         208
+  C:0C8BH         LINE#         210
+  C:0C93H         LINE#         211
+  C:0C93H         LINE#         212
+  C:0C96H         LINE#         213
+  C:0C99H         LINE#         214
+  C:0C9BH         LINE#         215
+  C:0CA3H         LINE#         216
+  C:0CABH         LINE#         217
+  C:0CADH         LINE#         218
+  C:0CB0H         LINE#         221
+  C:0CB0H         LINE#         223
+  C:0CB2H         LINE#         224
+  C:0CB5H         LINE#         225
+  C:0CB7H         LINE#         227
+  C:0CBAH         LINE#         231
+  C:0CBAH         LINE#         232
+  C:0CBDH         LINE#         233
+  C:0CBDH         LINE#         235
+  C:0CBFH         LINE#         236
+  C:0CC8H         LINE#         237
+  C:0CCAH         LINE#         238
+  C:0CCAH         LINE#         242
+  C:0CD0H         LINE#         243
+  C:0CD2H         LINE#         244
+  C:0CD4H         LINE#         245
+  C:0CD7H         LINE#         246
+  C:0CD9H         LINE#         248
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  11/19/2018  16:10:06  PAGE 8
 
 
-  C:0D06H         LINE#         212
-  C:0D0AH         LINE#         213
-  C:0D0EH         LINE#         214
-  C:0D10H         LINE#         216
-  C:0D12H         LINE#         217
-  C:0D12H         LINE#         218
-  C:0D15H         LINE#         220
-  C:0D15H         LINE#         221
-  C:0D15H         LINE#         223
-  C:0D1BH         LINE#         226
-  C:0D1DH         LINE#         227
-  C:0D21H         LINE#         238
-  C:0D21H         LINE#         240
+  C:0CD9H         LINE#         249
+  C:0CD9H         LINE#         252
+  C:0CD9H         LINE#         253
+  C:0CD9H         LINE#         255
+  C:0CDFH         LINE#         258
+  C:0CE1H         LINE#         259
+  C:0CE3H         LINE#         262
+  C:0CE3H         LINE#         264
   -------         ENDPROC       _DECIDE
   -------         PROC          RECEIVE
   -------         DO            
   D:0007H         SYMBOL        received
   -------         ENDDO         
-  C:0DAEH         LINE#         243
-  C:0DCBH         LINE#         244
-  C:0DCDH         LINE#         245
-  C:0DCFH         LINE#         246
-  C:0DD5H         LINE#         249
-  C:0DD8H         LINE#         250
+  C:0D2CH         LINE#         267
+  C:0D49H         LINE#         268
+  C:0D4BH         LINE#         269
+  C:0D4DH         LINE#         270
+  C:0D50H         LINE#         272
+  C:0D53H         LINE#         273
   -------         ENDPROC       RECEIVE
   -------         PROC          MAIN
-  C:0E53H         LINE#         256
-  C:0E53H         LINE#         260
-  C:0E56H         LINE#         262
-  C:0E56H         LINE#         263
-  C:0E56H         LINE#         264
-  C:0E59H         LINE#         266
+  C:0E49H         LINE#         278
+  C:0E49H         LINE#         282
+  C:0E4CH         LINE#         284
+  C:0E4CH         LINE#         285
+  C:0E4CH         LINE#         286
+  C:0E4FH         LINE#         287
+  C:0E52H         LINE#         288
   -------         ENDPROC       MAIN
   -------         ENDMOD        CLASSIFIER
 
+  -------         MODULE        ?C?IMUL
+  C:0800H         PUBLIC        ?C?IMUL
+  -------         ENDMOD        ?C?IMUL
+
   -------         MODULE        ?C?LMUL
-  C:0800H         PUBLIC        ?C?LMUL
+  C:0812H         PUBLIC        ?C?LMUL
   -------         ENDMOD        ?C?LMUL
 
   -------         MODULE        ?C?ULDIV
-  C:088BH         PUBLIC        ?C?ULDIV
+  C:089DH         PUBLIC        ?C?ULDIV
   -------         ENDMOD        ?C?ULDIV
 
-  -------         MODULE        ?C?LLDOPTR
-  C:091DH         PUBLIC        ?C?LLDOPTR
-  -------         ENDMOD        ?C?LLDOPTR
+  -------         MODULE        ?C?ULCMP
+  C:092FH         PUBLIC        ?C?ULCMP
+  -------         ENDMOD        ?C?ULCMP
 
   -------         MODULE        ?C?LLDIDATA
-  C:094DH         PUBLIC        ?C?LLDIDATA
+  C:0940H         PUBLIC        ?C?LLDIDATA
   -------         ENDMOD        ?C?LLDIDATA
+
+  -------         MODULE        ?C?LLDIDATA0
+  C:094CH         PUBLIC        ?C?LLDIDATA0
+  -------         ENDMOD        ?C?LLDIDATA0
 
   -------         MODULE        ?C?LSTIDATA
   C:0959H         PUBLIC        ?C?LSTIDATA
+BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  11/19/2018  16:10:06  PAGE 9
+
+
   -------         ENDMOD        ?C?LSTIDATA
 
-  -------         MODULE        ?C?LSTKOPTR
-  C:0965H         PUBLIC        ?C?LSTKOPTR
-BL51 BANKED LINKER/LOCATER V6.22.2.0                                                  11/19/2018  14:08:51  PAGE 8
-
-
-  -------         ENDMOD        ?C?LSTKOPTR
-
-  -------         MODULE        ?C?LLDXDATA
-  C:0989H         PUBLIC        ?C?LLDXDATA
-  -------         ENDMOD        ?C?LLDXDATA
-
-  -------         MODULE        ?C?LLDPDATA
-  C:0995H         PUBLIC        ?C?LLDPDATA
-  -------         ENDMOD        ?C?LLDPDATA
-
-  -------         MODULE        ?C?LLDCODE
-  C:09A1H         PUBLIC        ?C?LLDCODE
-  -------         ENDMOD        ?C?LLDCODE
-
-  -------         MODULE        ?C?LSTKIDATA
-  C:09B1H         PUBLIC        ?C?LSTKIDATA
-  -------         ENDMOD        ?C?LSTKIDATA
-
-  -------         MODULE        ?C?LSTKXDATA
-  C:09CAH         PUBLIC        ?C?LSTKXDATA
-  -------         ENDMOD        ?C?LSTKXDATA
-
-  -------         MODULE        ?C?LSTKPDATA
-  C:09FBH         PUBLIC        ?C?LSTKPDATA
-  -------         ENDMOD        ?C?LSTKPDATA
-
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?RUNTRAINING?CLASSIFIER
-
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?CALCULATETRAINTIME?CLASSIFIER
-
 *** WARNING L15: MULTIPLE CALL TO SEGMENT
-    SEGMENT: ?PR?CALCULATETESTTIME?CLASSIFIER
+    SEGMENT: ?PR?_CALCULATEAVERAGE?CLASSIFIER
     CALLER1: ?C_C51STARTUP
     CALLER2: ?PR?RECEIVE?CLASSIFIER
 
 ******************************************************************************
-* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 03CFH BYTE (47%) *
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 0478H BYTE (55%) *
 ******************************************************************************
 
-Program Size: data=65.0 xdata=0 code=1636
-LINK/LOCATE RUN COMPLETE.  3 WARNING(S),  0 ERROR(S)
+Program Size: data=60.5 xdata=0 code=1630
+LINK/LOCATE RUN COMPLETE.  1 WARNING(S),  0 ERROR(S)
