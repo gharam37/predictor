@@ -14,11 +14,13 @@ unsigned long TimerArray[2] = {0,0};
 unsigned long FirstUserData[2] = {0,0}; // should change to 9
 unsigned long SecondUserData[2] = {0,0}; // should change to 9
 bool predict= false;
+unsigned char size = 3;
+unsigned char numberOfTrainings = 2;
 void CalculateAverage(unsigned long Values[])
 
 {
 	int i =0;
-	for(;i<2;i++){ //Length of array should change to 10
+	for(;i<size-1;i++){ //Length of array should change to 10
 		if(switch_user==0){
 		FirstUserData[i]+=Values[i]/2000; //Divide by the number of training should change to 5 
 			Values[i] = 0; //Clear for next Count
@@ -33,7 +35,7 @@ void CalculateAverage(unsigned long Values[])
 }
 void ClearTimerArray(){
 	int i=0;
-	for(;i<2;i++)
+	for(;i<size-1;i++)
 	  TimerArray[i]=0;
 
 }
@@ -65,7 +67,7 @@ void flashUserB(){
 void determineUser() {
 	unsigned long dA = 0;
 	unsigned long dB = 0;
-	for(char i = 0; i<2; i++) {
+	for(char i = 0; i<size-1; i++) {
 		dA += (TimerArray[i] - FirstUserData[i])*(TimerArray[i] - FirstUserData[i]);
 		dB += (TimerArray[i] - SecondUserData[i])*(TimerArray[i] - SecondUserData[i]);
 	}
@@ -101,7 +103,9 @@ void calculateTestTime(){
 
 			while(StartCount == 0  ){
 				    while(TF0 == 0);   // Wait for Timer Overflow
-				    OverFlowCount++;
+					if(CorrectSofar == 1){
+				    	OverFlowCount++;
+					}
             TF0 = 0;
 			}				//wait till the key is released
 			TR0 = 0;            //Stop the timer
@@ -115,10 +119,9 @@ void calculateTestTime(){
             ClearTimerArray();
 			
 			}
-			if(TimerEntryIndex ==2){ // IF Reached our maximum letter
+			if(TimerEntryIndex ==size-1){ // IF Reached our maximum letter
 					TimerEntryIndex = 0;
-					determineUser();				
-				
+					predict = true;
 				}
 		  TH0 = 0;                //Reset the timer.
 		  TL0 = 0;	
@@ -157,9 +160,9 @@ void CalculateTime(){
             ClearTimerArray();
 			
 			}
-			if(TimerEntryIndex ==2){ // IF Reached our maximum letter
+			if(TimerEntryIndex ==size-1){ // IF Reached our maximum letter
 					TimerEntryIndex = 0;
-					if(trainingCount==2) // if we finished Training for user A to be changed to 5
+					if(trainingCount==numberOfTrainings) // if we finished Training for user A to be changed to 5
 					{
 						trainingCount = 0; 
 						CalculateAverage(TimerArray);
@@ -208,7 +211,7 @@ void uartConfig(void) {
 
 void decide(unsigned char received){
 	int idx;
-	for(idx = 0; idx<3; idx++)
+	for(idx = 0; idx<size; idx++)
 	{
 		if(word[idx] == received){
 			CorrectSofar = 0;
@@ -237,7 +240,7 @@ void decide(unsigned char received){
 	// if we reach the last char 
 	// increment the training count if it is training phase
 	// call predict if we are in the testing phase
-	if(nextChar == 3){ //Should Change to 10
+	if(nextChar == size){ //Should Change to 10
 		nextChar = 0;
 		StartTraining =0 ; //Stop when we finished one work for one user
 		if(!switch_training){
@@ -245,7 +248,7 @@ void decide(unsigned char received){
 		}
 	}
 	//finalizing training after 5 inputs for the word
-	if(trainingCount == 2){
+	if(trainingCount == numberOfTrainings){
 		nextChar = 0;
 		StartTraining = 0 ; //Stop when we finished a training for one user
 		// switch to training phase of user B
@@ -270,7 +273,12 @@ void main() {
 	
 	while(1)
 	{
-    CalculateTime();
+   	 	CalculateTime();
+		if(predict)
+		{
+			determineUser();
+			break;
+		}
 			
 	}
 	
