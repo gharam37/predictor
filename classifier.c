@@ -1,14 +1,14 @@
 #include <reg51.h>
 
-unsigned char switch_training;	// 0: training, 1: testing
-unsigned char switch_user;			// 0: User A, 1: User B
+bit switch_training;	// 0: training, 1: testing
+bit switch_user;			// 0: User A, 1: User B
 unsigned char trainingCount;		// Counts how many times did we get measurements from the user. Starts with 0.
 unsigned char nextChar=0; // identifies which character we expect the user to enter (index of the character) starts with 0.
 unsigned char word[3] = {'.','t','i'};	// Stores the characters of the word we want to use.
 unsigned char TimerEntryIndex = 0;  //Initial Time at which we started Program
 char StartCount = 2;  //Initial Time at which we started Program 2 means not in count mode 0-1 meaning we are waiting for input
 bit CorrectSofar = 0;
-char StartTraining=0; // To Stop overflow and counter from increasing when we aren't putting input .. between 2 runs of entering a work
+bit StartTraining=0; // To Stop overflow and counter from increasing when we aren't putting input .. between 2 runs of entering a work
 unsigned long TimerArray[2] = {0,0};
 unsigned long FirstUserData[2] = {0,0}; // should change to 9
 unsigned long SecondUserData[2] = {0,0}; // should change to 9
@@ -19,16 +19,16 @@ unsigned char numberOfTrainings = 2;
 sbit LED = P0^0;
 unsigned char bound=0;
 unsigned char c = 0; //To increase maximum timer delay time int bound = 0; //Changes how long LED flashes depending on user
-void CalculateAverage(unsigned long Values[],unsigned char value)
+void CalculateAverage(unsigned char value)
 {
 	int i =0;
 	for(;i<2;i++){ //Length of array should change to 10
 		if(switch_user==0){
-		FirstUserData[i]+=Values[i]/(value*1000);; //Divide by the number of training should change to 5 
-			Values[i] = 0; //Clear for next Count
+		FirstUserData[i]+=TimerArray[i]/(value*1000);; //Divide by the number of training should change to 5 
+			//TimerArray[i] = 0; //Clear for next Count
 		}
 		else{
-			SecondUserData[i]=Values[i]/(value*1000);
+			SecondUserData[i]=TimerArray[i]/(value*1000);
 		}
 			
 	}
@@ -124,7 +124,7 @@ void calculateTestTime(){
 			  TimerMethod();
 			if(TimerEntryIndex ==2){ // IF Reached our maximum letter
 					TimerEntryIndex = 0;
-					CalculateAverage(TimerArray,1);
+					CalculateAverage(1);
 
 				  predict =1;
           //////// Call The Method that calculates the ecludien distance in here 					
@@ -141,6 +141,7 @@ void calculateTestTime(){
 void CalculateTime(){
 	if( switch_training){
 	  calculateTestTime();
+		return;
 	
 	}
 
@@ -152,7 +153,7 @@ void CalculateTime(){
 					if(trainingCount==2) // if we finished Training for user A to be changed to 5
 					{
 						trainingCount = 0; 
-						CalculateAverage(TimerArray,numberOfTrainings);
+						CalculateAverage(numberOfTrainings);
 						ClearTimerArray();
 						if(!switch_user){ // If we r still in User A
 						switch_user=1; //Go to b
