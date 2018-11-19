@@ -1,5 +1,4 @@
 #include <reg51.h>
-#include<stdio.h>
 
 //Feel free to change methods declarations
 unsigned char switch_training;	// 0: training, 1: testing
@@ -15,16 +14,17 @@ unsigned long TimerArray[2] = {0,0};
 unsigned long FirstUserData[2] = {0,0}; // should change to 9
 unsigned long SecondUserData[2] = {0,0}; // should change to 9
 bool predict= false;
-void CalculateAverage(unsigned int Values[])
+void CalculateAverage(unsigned long Values[])
+
 {
 	int i =0;
 	for(;i<2;i++){ //Length of array should change to 10
 		if(switch_user==0){
-		FirstUserData[i]+=Values[i]; //Divide by the number of training should change to 5 
+		FirstUserData[i]+=Values[i]/2000; //Divide by the number of training should change to 5 
 			Values[i] = 0; //Clear for next Count
 		}
 		else{
-			SecondUserData[i]=Values[i];
+			SecondUserData[i]=Values[i]/2000;
 		}
 			
 	}
@@ -106,9 +106,14 @@ void calculateTestTime(){
 			}				//wait till the key is released
 			TR0 = 0;            //Stop the timer
 			if(CorrectSofar == 1){
-			TimerArray[TimerEntryIndex]=((TH0 << 8) | TL0)+0x0000FFFF*OverFlowCount; //Load timer into Array
+			TimerArray[TimerEntryIndex]=(((TH0 << 8) | TL0)+0x0000FFFF*OverFlowCount)/1000; //Load timer into Array
 				TimerEntryIndex++;
 
+			}
+			else{
+				    TimerEntryIndex=0;
+            ClearTimerArray();
+			
 			}
 			if(TimerEntryIndex ==2){ // IF Reached our maximum letter
 					TimerEntryIndex = 0;
@@ -136,7 +141,9 @@ void CalculateTime(){
 
 			while(StartCount == 0  ){
 				    while(TF0 == 0);   // Wait for Timer Overflow
+				    if(CorrectSofar==1){
 				    OverFlowCount++;
+						}
             TF0 = 0;
 			}				//wait till the key is released
 			TR0 = 0;            //Stop the timer
@@ -144,6 +151,11 @@ void CalculateTime(){
 			TimerArray[TimerEntryIndex]=+((TH0 << 8) | TL0)+0x0000FFFF*OverFlowCount; //Load timer into Array
 				TimerEntryIndex++;
 
+			}
+			else{
+				    TimerEntryIndex=0;
+            ClearTimerArray();
+			
 			}
 			if(TimerEntryIndex ==2){ // IF Reached our maximum letter
 					TimerEntryIndex = 0;
@@ -186,9 +198,9 @@ void uartConfig(void) {
 										// Tells that we are using N = 384.
 										// What does it mean? I don't know xD
 	
-  TMOD |= 0x21;			// timer 1, mode 2, 8-bit reload , timer 0 for counting
-  TH1 	= 0xF3;			// baud rate: reload value for 2400 baud @ 12MHz (to change?)
-  TR1 	= 1;				// start timer 1
+  	TMOD |= 0x21;			// timer 1, mode 2, 8-bit reload , timer 0 for counting
+  	TH1 	= 0xF3;			// baud rate: reload value for 2400 baud @ 12MHz (to change?)
+ 	TR1 	= 1;				// start timer 1
 	TL0 = 0x00;              //Initialise TIMER0 in 16 bit mode 
 	TH0 = 0x00;
 }
@@ -210,6 +222,8 @@ void decide(unsigned char received){
 		StartCount=2; //Reset Count
     	CorrectSofar = 0;
 		ClearTimerArray();
+    	TimerEntryIndex=0;
+		trainingCount=0;
 		return;
 	}
 	// calculate the flight time between this character and the previous one
