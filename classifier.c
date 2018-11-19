@@ -1,19 +1,24 @@
 #include <reg51.h>
 
-//Feel free to change methods declarations
 unsigned char switch_training;	// 0: training, 1: testing
 unsigned char switch_user;			// 0: User A, 1: User B
 unsigned char trainingCount;		// Counts how many times did we get measurements from the user. Starts with 0.
 unsigned char nextChar=0; // identifies which character we expect the user to enter (index of the character) starts with 0.
 unsigned char word[3] = {'.','t','i'};	// Stores the characters of the word we want to use.
-unsigned int TimerEntryIndex = 0;  //Initial Time at which we started Program
-int StartCount = 2;  //Initial Time at which we started Program 2 means not in count mode 0-1 meaning we are waiting for input
-int CorrectSofar = 0;
-int StartTraining=0; // To Stop overflow and counter from increasing when we aren't putting input .. between 2 runs of entering a work
+unsigned char TimerEntryIndex = 0;  //Initial Time at which we started Program
+char StartCount = 2;  //Initial Time at which we started Program 2 means not in count mode 0-1 meaning we are waiting for input
+bit CorrectSofar = 0;
+char StartTraining=0; // To Stop overflow and counter from increasing when we aren't putting input .. between 2 runs of entering a work
 unsigned long TimerArray[2] = {0,0};
 unsigned long FirstUserData[2] = {0,0}; // should change to 9
 unsigned long SecondUserData[2] = {0,0}; // should change to 9
-long double num = 9000000000000000000;
+unsigned long OverFlowCount;
+bit predict= 0;
+unsigned char size = 3;
+unsigned char numberOfTrainings = 3;
+sbit LED = P0^0;
+unsigned char bound=0;
+unsigned char c = 0; //To increase maximum timer delay time int bound = 0; //Changes how long LED flashes depending on user
 void CalculateAverage(unsigned long Values[])
 {
 	int i =0;
@@ -36,12 +41,7 @@ void ClearTimerArray(){
 	  TimerArray[i]=0;
 
 }
-void runTraining(){}
-// called when the user enters the whole word in the testing phase it should predict who was the user
-void predict(){
- 
-}
- 
+
  // TODO: you know what character did we actually read now (using the variable nextChar [it is an index to the character]) so you should measure the flight time and add it to training
 // for the current user and same for the test time
 void calculateTrainTime(){
@@ -215,7 +215,7 @@ void decide(unsigned char received){
 			
 		}
 		else{
-			predict();
+			//predict();
 			return;
 		}	
 	}

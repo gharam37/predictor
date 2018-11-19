@@ -1,4 +1,4 @@
-C51 COMPILER V9.59.0.0   CLASSIFIER                                                        11/19/2018 14:08:50 PAGE 1   
+C51 COMPILER V9.59.0.0   CLASSIFIER                                                        11/19/2018 15:19:54 PAGE 1   
 
 
 C51 COMPILER V9.59.0.0, COMPILATION OF MODULE CLASSIFIER
@@ -11,59 +11,60 @@ line level    source
 *** WARNING C500 IN LINE 1 OF classifier.c: INCORRECT LICENSE ID CODE (LIC) IN 'TOOLS.INI'
    1          #include <reg51.h>
    2          
-   3          //Feel free to change methods declarations
-   4          unsigned char switch_training;  // 0: training, 1: testing
-   5          unsigned char switch_user;      // 0: User A, 1: User B
-   6          unsigned char trainingCount;    // Counts how many times did we get measurements from the user. Starts with 
+   3          unsigned char switch_training;  // 0: training, 1: testing
+   4          unsigned char switch_user;      // 0: User A, 1: User B
+   5          unsigned char trainingCount;    // Counts how many times did we get measurements from the user. Starts with 
              -0.
-   7          unsigned char nextChar=0; // identifies which character we expect the user to enter (index of the characte
+   6          unsigned char nextChar=0; // identifies which character we expect the user to enter (index of the characte
              -r) starts with 0.
-   8          unsigned char word[3] = {'.','t','i'};  // Stores the characters of the word we want to use.
-   9          unsigned int TimerEntryIndex = 0;  //Initial Time at which we started Program
-  10          int StartCount = 2;  //Initial Time at which we started Program 2 means not in count mode 0-1 meaning we a
-             -re waiting for input
-  11          int CorrectSofar = 0;
-  12          int StartTraining=0; // To Stop overflow and counter from increasing when we aren't putting input .. betwe
-             -en 2 runs of entering a work
-  13          unsigned long TimerArray[2] = {0,0};
-  14          unsigned long FirstUserData[2] = {0,0}; // should change to 9
-  15          unsigned long SecondUserData[2] = {0,0}; // should change to 9
-  16          long double num = 9000000000000000000;
-  17          void CalculateAverage(unsigned long Values[])
-  18          {
-  19   1        int i =0;
-  20   1        for(;i<2;i++){ //Length of array should change to 10
-  21   2          if(switch_user==0){
-  22   3          FirstUserData[i]+=Values[i]/2000; //Divide by the number of training should change to 5 
-  23   3            Values[i] = 0; //Clear for next Count
-  24   3          }
-  25   2          else{
-  26   3            SecondUserData[i]=Values[i]/2000;
-  27   3          }
-  28   2            
-  29   2        }
-  30   1        
-  31   1        
-  32   1      }
-  33          void ClearTimerArray(){
-  34   1        int i=0;
-  35   1        for(;i<2;i++)
-  36   1          TimerArray[i]=0;
-  37   1      
-  38   1      }
-  39          void runTraining(){}
-  40          // called when the user enters the whole word in the testing phase it should predict who was the user
-  41          void predict(){
-  42   1       
+   7          unsigned char word[3] = {'.','t','i'};  // Stores the characters of the word we want to use.
+   8          unsigned char TimerEntryIndex = 0;  //Initial Time at which we started Program
+   9          char StartCount = 2;  //Initial Time at which we started Program 2 means not in count mode 0-1 meaning we 
+             -are waiting for input
+  10          bit CorrectSofar = 0;
+  11          char StartTraining=0; // To Stop overflow and counter from increasing when we aren't putting input .. betw
+             -een 2 runs of entering a work
+  12          unsigned long TimerArray[2] = {0,0};
+  13          unsigned long FirstUserData[2] = {0,0}; // should change to 9
+  14          unsigned long SecondUserData[2] = {0,0}; // should change to 9
+  15          unsigned long OverFlowCount;
+  16          bit predict= 0;
+  17          unsigned char size = 3;
+  18          unsigned char numberOfTrainings = 3;
+  19          sbit LED = P0^0;
+  20          unsigned char bound=0;
+  21          unsigned char c = 0; //To increase maximum timer delay time int bound = 0; //Changes how long LED flashes 
+             -depending on user
+  22          void CalculateAverage(unsigned long Values[])
+  23          {
+  24   1        int i =0;
+  25   1        for(;i<2;i++){ //Length of array should change to 10
+  26   2          if(switch_user==0){
+  27   3          FirstUserData[i]+=Values[i]/2000; //Divide by the number of training should change to 5 
+  28   3            Values[i] = 0; //Clear for next Count
+  29   3          }
+  30   2          else{
+  31   3            SecondUserData[i]=Values[i]/2000;
+  32   3          }
+  33   2            
+  34   2        }
+  35   1        
+  36   1        
+  37   1      }
+  38          void ClearTimerArray(){
+  39   1        int i=0;
+  40   1        for(;i<2;i++)
+  41   1          TimerArray[i]=0;
+  42   1      
   43   1      }
-  44           
+  44          
   45           // TODO: you know what character did we actually read now (using the variable nextChar [it is an index to
              - the character]) so you should measure the flight time and add it to training
   46          // for the current user and same for the test time
   47          void calculateTrainTime(){
-  48   1      
-C51 COMPILER V9.59.0.0   CLASSIFIER                                                        11/19/2018 14:08:50 PAGE 2   
+C51 COMPILER V9.59.0.0   CLASSIFIER                                                        11/19/2018 15:19:54 PAGE 2   
 
+  48   1      
   49   1        
   50   1      
   51   1       
@@ -125,9 +126,9 @@ line level    source
  107   3            }       //wait till the key is released
  108   2            TR0 = 0;            //Stop the timer
  109   2            if(CorrectSofar == 1){
- 110   3            TimerArray[TimerEntryIndex]=+((TH0 << 8) | TL0)+0x0000FFFF*OverFlowCount; //Load timer into Array
-C51 COMPILER V9.59.0.0   CLASSIFIER                                                        11/19/2018 14:08:50 PAGE 3   
+C51 COMPILER V9.59.0.0   CLASSIFIER                                                        11/19/2018 15:19:54 PAGE 3   
 
+ 110   3            TimerArray[TimerEntryIndex]=+((TH0 << 8) | TL0)+0x0000FFFF*OverFlowCount; //Load timer into Array
  111   3              TimerEntryIndex++;
  112   3      
  113   3            }
@@ -189,9 +190,9 @@ line level    source
  169   1        int idx;
  170   1        for(idx = 0; idx<3; idx++)
  171   1        {
- 172   2          if(word[idx] == received){
-C51 COMPILER V9.59.0.0   CLASSIFIER                                                        11/19/2018 14:08:50 PAGE 4   
+C51 COMPILER V9.59.0.0   CLASSIFIER                                                        11/19/2018 15:19:54 PAGE 4   
 
+ 172   2          if(word[idx] == received){
  173   3            CorrectSofar = 0;
  174   3            break;
  175   3          }
@@ -237,7 +238,7 @@ line level    source
  215   3            
  216   3          }
  217   2          else{
- 218   3            predict();
+ 218   3            //predict();
  219   3            return;
  220   3          } 
  221   2        }
@@ -253,9 +254,9 @@ line level    source
  231   2            //switch_user = 1;
  232   2          } else {
  233   2          // both A and B did the training, switch to testing
- 234   2            //printf("%s","Testing phase started");
-C51 COMPILER V9.59.0.0   CLASSIFIER                                                        11/19/2018 14:08:50 PAGE 5   
+C51 COMPILER V9.59.0.0   CLASSIFIER                                                        11/19/2018 15:19:54 PAGE 5   
 
+ 234   2            //printf("%s","Testing phase started");
  235   2            switch_training = 1;
  236   2          }*/ 
  237   2          
@@ -293,13 +294,13 @@ line level    source
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    897    ----
+   CODE SIZE        =    841    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =     43      13
+   DATA SIZE        =     42      13
    IDATA SIZE       =   ----    ----
-   BIT SIZE         =   ----    ----
+   BIT SIZE         =      2    ----
 END OF MODULE INFORMATION.
 
 
