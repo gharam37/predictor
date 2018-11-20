@@ -14,7 +14,7 @@ unsigned int FirstUserData[9] = {0,0,0,0,0,0,0,0,0};
 unsigned int SecondUserData[9] = {0,0,0,0,0,0,0,0,0}; 
 unsigned long OverFlowCount;
 bit predict= 0;
-unsigned char numberOfTrainings = 2;
+unsigned char numberOfTrainings = 5;
 sbit LED = P0^0;
 unsigned char bound=0;
 unsigned char c = 0; //To increase maximum timer delay time int bound = 0; //Changes how long LED flashes depending on user
